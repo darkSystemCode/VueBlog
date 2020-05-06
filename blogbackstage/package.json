@@ -1,0 +1,31 @@
+{
+  "name": "backstage",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "core-js": "^3.6.4",
+    "countup.js": "^2.0.4",
+    "echarts": "^4.7.0",
+    "element-ui": "^2.13.0",
+    "font-awesome": "^4.7.0",
+    "highlight.js": "^9.18.1",
+    "nprogress": "^0.2.0",
+    "vue": "^2.6.11",
+    "vue-countup-v2": "^4.0.0",
+    "vue-echarts": "^5.0.0-beta.0",
+    "vue-quill-editor": "^3.0.6",
+    "vue-router": "^3.1.5",
+    "vuex": "^3.2.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.2.0",
+    "@vue/cli-plugin-router": "~4.2.0",
+    "@vue/cli-service": "~4.2.0",
+    "vue-template-compiler": "^2.6.11"
+  }
+}

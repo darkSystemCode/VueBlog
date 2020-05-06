@@ -1,0 +1,60 @@
+{
+  "LOGO": {
+      "id": "1",
+      "img": "/imgs/logo.png",
+      "title": "博客管理系统"
+    },
+  "nav": [
+    {
+      "icon": "el-icon-s-platform",
+      "title": "控制台",
+      "child": [
+        {
+          "title": "主控制台",
+          "path": "/welcome"
+        },
+        {
+          "title": "个人档案",
+          "path": "/profile"
+        }
+      ]
+    },
+    {
+      "icon": "el-icon-setting",
+      "title": "基础设置",
+      "child": [
+        {
+          "title": "设置导航",
+          "path": "/nav"
+        },
+        {
+          "title": "设置个人信息",
+          "path": "/mineInfo"
+        },
+        {
+          "title": "修改密码",
+          "path": "/updatePass"
+        }
+      ]
+    },
+    {
+      "icon": "fa fa-book",
+      "title": "文章分类",
+      "child": [
+        {
+          "title": "富文本编辑器",
+          "path": "/quillEditor"
+        },
+        {
+          "title": "文章管理",
+          "path": "/articleManager"
+        }
+      ]
+    },
+    {
+      "icon": "el-icon-chat-line-square",
+      "title": "留言管理",
+      "path": "/mail"
+    }
+  ]
+}
