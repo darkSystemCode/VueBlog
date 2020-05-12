@@ -2,14 +2,14 @@
   <div class="welcome">
     <el-row :gutter="10" class="row">
       <el-col :span="24">
-        <el-card id="card">
+        <el-card id="card" class="card">
           <v-chart :options="active"></v-chart>
         </el-card>
       </el-col>
     </el-row>
     <el-row :gutter="10" class="row">
       <el-col :span="6">
-        <el-card shadow="hover" class="topCard">
+        <el-card shadow="hover" class="topCard card">
           <div slot="header">
             <span>阅读量</span>
             <el-tag type="danger" effect="dark" class="btn">日</el-tag>
@@ -26,7 +26,7 @@
         </el-card>
       </el-col>
       <el-col :span="6">
-        <el-card shadow="hover" class="topCard">
+        <el-card shadow="hover" class="topCard card">
           <div slot="header">
             <span>发布量</span>
             <el-tag type="danger" effect="dark" class="btn">日</el-tag>
@@ -39,7 +39,7 @@
         </el-card>
       </el-col>
       <el-col :span="6">
-        <el-card shadow="hover" class="topCard">
+        <el-card shadow="hover" class="topCard card">
           <div slot="header">
             <span>销售额</span>
             <el-tag type="warning" effect="dark" class="btn">年</el-tag>
@@ -54,7 +54,7 @@
         </el-card>
       </el-col>
       <el-col :span="6">
-        <el-card shadow="hover" class="topCard">
+        <el-card shadow="hover" class="topCard card">
           <div slot="header">
             <span>用户量</span>
           </div>
@@ -70,7 +70,7 @@
       <el-col :span="17">
         <el-row :gutter="5">
           <el-col :span="12">
-            <el-card shadow="always">
+            <el-card shadow="always" class="card">
               <div slot="header">最新发布文章</div>
               <ul>
                 <li v-for="(item, index) in newArticle" :key="index">
@@ -81,7 +81,7 @@
             </el-card>
           </el-col>
           <el-col :span="12">
-            <el-card shadow="always">
+            <el-card shadow="always" class="card">
               <div slot="header">精选文章</div>
               <ul>
                 <li v-for="(item, index) in selectedArticle" :key="index">
@@ -94,7 +94,7 @@
         </el-row>
         <el-row class="row">
           <el-col :span="24">
-            <el-card shadow="always" style="margin-top: 10px">
+            <el-card shadow="always" style="margin-top: 10px" class="card">
               <div slot="header"><i class="el-icon-info"></i><span>说明</span></div>
               <div style="height: 271px">
                 <el-card shadow="hover">
@@ -107,7 +107,7 @@
         </el-row>
       </el-col>
       <el-col :span="7">
-        <el-card shadow="always" class="cardBottom">
+        <el-card shadow="always" class="cardBottom card">
           <div slot="header"><i class="el-icon-message-solid"></i><span>通告</span></div>
           <div class="notice">
             <el-timeline :reverse="true">
@@ -121,7 +121,7 @@
             </el-timeline>
           </div>
         </el-card>
-        <el-card shadow="always" class="cardBottom">
+        <el-card shadow="always" class="cardBottom card">
           <div slot="header"><i class="el-icon-s-help"></i><span>帮助</span></div>
           <div>
             <el-card shadow="hover" style="margin-bottom: 10px;background-color: #E6A23C">
@@ -132,7 +132,7 @@
             </el-card>
           </div>
         </el-card>
-        <el-card shadow="always" class="cardBottom">
+        <el-card shadow="always" class="cardBottom card">
           <div slot="header"><i class="el-icon-info"></i><span>信息</span></div>
           <div>
             <el-button icon="el-icon-search" circle></el-button>

@@ -14,6 +14,9 @@ const login = () => import('../views/Login')
 const register = () => import('../views/Register')
 const home = () => import('../components/Home')
 const profile = () => import('../views/Profile')
+const notPath = () => import('../views/error/NotPath_404')
+const slider = () => import('../views/base/Slider')
+const uploadFile = () => import('../views/base/UploadFile')
 
 const routes = [
   {
@@ -29,73 +32,53 @@ const routes = [
     component: login
   },
   {
+    path: '/404',
+    component: notPath
+  },
+  {
     path: '/home',
     redirect: '/welcome',
     component: home,
     children: [
       { //首页
         path: '/welcome',
-        meta: {
-          name: '主控制台',
-          comp: 'welcome'
-        },
         component: welcome
       },
       { //导航设置
         path: '/nav',
-        meta: {
-          name: '设置导航',
-          comp: 'setNav'
-        },
         component: nav
       },
       { //设置个人信息
         path: '/mineInfo',
-        meta: {
-          name: '设置个人信息',
-          comp: 'mineInfo'
-        },
         component: mineInfo
       },
       { //quillEditor
         path: '/quillEditor',
-        meta: {
-          name: '富文本编辑器',
-          comp: 'quillEditor'
-        },
         component: quillEditor
       },
       { //文章分类管理
         path: '/articleManager',
-        meta: {
-          name: '文章管理',
-          comp: 'articleManager'
-        },
         component: articleManager
       },
       {//留言管理
         path: "/mail",
-        meta: {
-          name: '留言管理',
-          comp: 'mail'
-        },
         component: mail
       },
       { //修改密码
         path: '/updatePass',
-        meta: {
-          name: '修改密码',
-          comp: 'homeUpdatePass'
-        },
         component: homeUpdatePass
       },
       {
         path: '/profile',
-        meta: {
-          name: '个人档案',
-          comp: 'profile'
-        },
         component: profile
+      },
+      {
+        path: '/slider',
+        component: slider
+      },
+      {
+        path: '/uploadFile',
+        component: uploadFile
       }
     ]
   }
@@ -111,6 +94,9 @@ const router = new VueRouter({
 * 全局前置路由
 * */
 router.beforeEach((to, from, next) => {
+  if(to.matched.length === 0) {
+    next('/404')
+  }
   //校验是否登录，防止不登录，直接进入其他页面
   if((to.path == '/login' && from.path === '/') || (to.path == '/welcome' && from.path === '/login')) {
     next()

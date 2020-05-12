@@ -289,8 +289,8 @@
     content: ' ';
     width: 8px;
     height: 8px;
-    background-color: #000000;
-    opacity: 0.5;
+    background-color: #00cc00;
+    /*opacity: 0.5;*/
     border-radius: 5px;
     z-index: 1000;
     position: absolute;
@@ -300,7 +300,7 @@
   }
 
   .active {
-    background-color: #8c4356;
+    background-color: #5F4B8B;
     color: #ffffff;
   }
 

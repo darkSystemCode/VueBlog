@@ -55,6 +55,21 @@
       "icon": "el-icon-chat-line-square",
       "title": "留言管理",
       "path": "/mail"
+    },
+    {
+      "icon": "el-icon-coin",
+      "title": "基础演示",
+      "path": "/base",
+      "child": [
+        {
+          "title": "滑块",
+          "path": "/slider"
+        },
+        {
+          "title": "文件上传",
+          "path": "/uploadFile"
+        }
+      ]
     }
   ]
 }

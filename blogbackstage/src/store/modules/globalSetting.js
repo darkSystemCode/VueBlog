@@ -1,10 +1,10 @@
 
 const state = {
   drawerState: false,
-  asideColor: '#303133',
+  asideColor: '#5F4B8B',
   aTextColor: '#FFFFFF',
   aActiveColor: '#ff6600',
-  headerBColor: '#303133',
+  headerBColor: '#5F4B8B',
   headerColor: '#FFFFFF',
   doubleOpen: true
 }

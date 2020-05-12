@@ -9,6 +9,7 @@
       <Header></Header>
       <el-main :style="{paddingTop: '60px', paddingLeft: '0', paddingRight: '0'}">
         <AsideTitle></AsideTitle>
+        <!--页面的展示-->
         <transition name="compAnimate" appear>
           <keep-alive>
             <router-view :style="{padding: '0 20px', marginTop: '55px'}"></router-view>
@@ -143,10 +144,6 @@
       },
       setCrumbs(pt,ct) {
         let crumbs = new Array()
-        // crumbs.push({
-        //   'parentTitle': pt,
-        //   'childTitle': ct
-        // })
         crumbs.push(pt,ct)
         this.$store.commit('header/setCrumbs', crumbs)
       }

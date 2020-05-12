@@ -202,9 +202,11 @@
       //进来先判断，上次登录是否勾选了自动登录和记住密码
       //勾选了记住密码
       let obj = window.localStorage.getItem("remember")
-      this.remPs = obj.remember
-      this.loginForm.username = obj.user.username
-      this.loginForm.password = obj.user.password
+      if(obj != null) {
+        this.remPs = obj.remember
+        this.loginForm.username = obj.user.username
+        this.loginForm.password = obj.user.password
+      }
     }
   }
 </script>

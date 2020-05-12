@@ -19,6 +19,14 @@ a {
   padding: 10px !important;;
 }
 
+.aside {
+  box-shadow: 0 0 3px 2px #000000;
+}
+
+.el-menu {
+  border: 0;
+}
+
 /*logo栏位*/
 .avatar {
   position: fixed;
@@ -28,7 +36,8 @@ a {
   text-align: center;
   overflow: hidden;
   z-index: 100;
-  background-color: rgb(48, 49, 51);
+  /*background-color: rgb(48, 49, 51);*/
+  background-color: #5F4B8B;
 }
 
 .avatar:hover {
@@ -59,7 +68,7 @@ a {
   top: 0;
   right: 0;
   left: 200px;
-  z-index: 300;
+  z-index: 100;
 }
 
 .el-container {
@@ -72,5 +81,13 @@ a {
   transition: all .3s ease-in-out;
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
+}
+
+.list span {
+  color: #a6a6a6!important;
+}
+
+#nprogress .bar {
+  height: 4px;
 }
 
