@@ -68,6 +68,14 @@
         {
           "title": "文件上传",
           "path": "/uploadFile"
+        },
+        {
+          "title": "卡片列表",
+          "path": "/cardList"
+        },
+        {
+          "title": "图片瀑布屏",
+          "path": "/waterfall"
         }
       ]
     }

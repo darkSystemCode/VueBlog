@@ -36,8 +36,8 @@ a {
   text-align: center;
   overflow: hidden;
   z-index: 100;
-  /*background-color: rgb(48, 49, 51);*/
   background-color: #5F4B8B;
+  border-bottom: 1px solid;
 }
 
 .avatar:hover {

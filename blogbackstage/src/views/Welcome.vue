@@ -344,7 +344,8 @@
     border-radius: 21px;
     margin-right: 5px;
     text-align: center;
-    background-color: #409EFF;
+    background-color: #5F4B8B;
+    color: #FFFFFF;
   }
 
   ul li span[articleHeader]:hover {
@@ -367,6 +368,10 @@
   .topCard .content {
     font-size: 20px;
     font-weight: 600;
+  }
+
+  .topCard .content span:nth-child(1) {
+    color: #5F4B8B;
   }
 
   .topCard .content .other {

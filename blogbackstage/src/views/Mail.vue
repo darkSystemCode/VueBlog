@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table :data="mails" border style="width: 100%" empty-text="本来无一物，何处惹尘埃">
-      <el-table-column fixed prop="date" label="日期" width="160"></el-table-column>
+      <el-table-column fixed prop="date" :formatter="dateFormat" label="日期" width="160"></el-table-column>
       <el-table-column prop="sendAccount" label="QQ账号" width="110"></el-table-column>
       <el-table-column prop="sendEmail" label="邮箱账号" width="180"></el-table-column>
       <el-table-column prop="advises" label="建议"></el-table-column>
@@ -41,12 +41,42 @@
 <script>
   import Paging from "../components/Paging"
   import {axiosUtil} from "../network/axiosUtil"
+  import formatTime from '../utils/formatTime'
 
   export default {
     name: "Mail",
     data() {
       return {
-        mails: [],
+        mails: [
+          {
+            date: '1589360053',
+            sendAccount: '154954266',
+            sendEmail: '18454245441',
+            advises: '测试数据1',
+            isReply: 0
+          },
+          {
+            date: '1589360053',
+            sendAccount: '154954266',
+            sendEmail: '18454245441',
+            advises: '测试数据2',
+            isReply: 1
+          },
+          {
+            date: '1589360053',
+            sendAccount: '154954266',
+            sendEmail: '18454245441',
+            advises: '测试数据3',
+            isReply: 0
+          },
+          {
+            date: '1589360053',
+            sendAccount: '154954266',
+            sendEmail: '18454245441',
+            advises: '测试数据4',
+            isReply: 0
+          }
+        ],
         isOpen: false,
         replyEmail: {
           toEmail: '',
@@ -57,11 +87,23 @@
             {required: true, message: '请输入200字以内的回复内容', max: '200', trigger: "blur"}
           ]
         },
-        total: 0, //返回数据总数
+        total: 40, //返回数据总数
         page: 1 //当前页数
       }
     },
     methods: {
+      //时间戳转换时间格式
+      dateFormat(row, col) {
+        let resDate
+        let date = row[col.property]
+        if (date != null) {
+          resDate = this.formatTime(date)
+        }
+        return resDate
+      },
+      formatTime(time) { //格式化时间
+        return formatTime(time, "yyyy-MM-dd hh:mm:ss")
+      },
       //打开回复邮件窗口，默认显示对方邮箱，且不可修改
       replyWin(row) {
         this.isOpen = true
@@ -70,7 +112,7 @@
       //点击右上角的关闭按钮前，也需要询问是否发送当前邮件
       beforeClose(done) {
         let state = confirm("是否需要提交当前邮件？")
-        if(state) {
+        if (state) {
           this.sendEmail('replyForm')
         } else {
           done()
@@ -89,7 +131,7 @@
             advises: data.content
           }
         }).then(res => {
-          if(res.code === 200) {
+          if (res.code === 200) {
             this.mails = res.data
             this.isOpen = false
           }
@@ -104,7 +146,7 @@
             currPage: this.page
           }
         }).then(res => {
-          if(res.code === 200) {
+          if (res.code === 200) {
             this.mails = res.data
           }
         })
@@ -118,7 +160,7 @@
           currPage: this.page
         }
       }).then(res => {
-        if(res.code === 200) {
+        if (res.code === 200) {
           this.mails = res.data
           this.total = res.data.length
         }

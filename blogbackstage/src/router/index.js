@@ -79,6 +79,14 @@ const routes = [
       {
         path: '/uploadFile',
         component: uploadFile
+      },
+      {
+        path: '/cardList',
+        component: () => import('../views/base/CardList')
+      },
+      {
+        path: '/waterfall',
+        component: () => import('../views/base/WaterFall')
       }
     ]
   }

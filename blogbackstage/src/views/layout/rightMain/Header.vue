@@ -31,13 +31,17 @@
           <el-button type="primary" size="mini">全部已读</el-button>
           <el-button type="danger" size="mini">清空</el-button>
         </div>
-
         <p slot="reference" multiBtn @click="MQBox">
-          <i class="el-icon-message-solid badge"></i>
+          <el-tooltip class="item" effect="dark" content="系统通知" placement="bottom">
+            <i class="el-icon-message-solid badge"></i>
+          </el-tooltip>
         </p>
       </el-popover>
       <!--刷新按钮-->
-      <p multiBtn @click="$router.go(0)"><i class="el-icon-refresh"></i></p>
+      <el-tooltip class="item" effect="dark" content="刷新页面" placement="bottom">
+        <p multiBtn @click="$router.go(0)"><i class="el-icon-refresh"></i></p>
+      </el-tooltip>
+
       <!--个人信息-->
       <el-dropdown trigger="hover" placement="bottom" @command="handleCommand">
         <p class="el-dropdown-link" multiBtn>
@@ -50,7 +54,9 @@
         </el-dropdown-menu>
       </el-dropdown>
       <!--多功能按钮，展开全局设置-->
-      <p multiBtn rotate @click="openGlobalSetting"><i class="el-icon-more"></i></p>
+      <el-tooltip class="item" effect="dark" content="全局设置页面" placement="bottom">
+        <p multiBtn rotate @click="openGlobalSetting"><i class="el-icon-more"></i></p>
+      </el-tooltip>
     </div>
     <GlbSetting :drawer="getDrawerState"></GlbSetting>
   </el-header>
@@ -187,7 +193,7 @@
     position: absolute;
     width: 8px;
     height: 8px;
-    margin-top: 5px;
+    /*margin-top: 0px;*/
     background-color: #e60000;
     border-radius: 10px;
   }
