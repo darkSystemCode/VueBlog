@@ -1,111 +1,125 @@
 <template>
-  <div class="waterFall-box" :style="{height: height+'px'}">
-    <div class="img-box" v-for="(item, index) in images" :key="index" ref="img">
-      <img :src="item" alt="">
+  <div class="waterFall-box" :style="{height: (height+70)+'px'}" ref="box">
+    <div class="img-box" v-for="(item, index) in images" :key="index" ref="img" :style="{padding: offsetPixel+'px'}">
+      <img :src="item.img" alt="">
     </div>
+    <footer v-if="isLoad = false"
+            :style="{position: 'absolute', top: (height+50)+'px', color: 'red', left: '50%', transform: 'translateX(-50%)'}">
+      没有图片加载了...
+    </footer>
   </div>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import Axios from 'axios'
 
   export default {
     name: "WaterFall",
     data() {
       return {
-        images: [
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24915_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24916_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24918_s.jpg',
-          'http://pic.sc.chinaz.com/Files/pic/pic9/202005/zzpic24944_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24971_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24972_s.jpg',
-          'http://pic.sc.chinaz.com/Files/pic/pic9/202005/zzpic24970_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24948_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24947_s.jpg',
-          'http://pic.sc.chinaz.com/Files/pic/pic9/202005/zzpic24914_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24881_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202005/zzpic24880_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202005/zzpic24877_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/bpic20200_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24882_s.jpg',
-          'http://pic.sc.chinaz.com/Files/pic/pic9/202005/zzpic24866_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24868_s.jpg',
-          'http://pic.sc.chinaz.com/Files/pic/pic9/202005/zzpic24912_s.jpg',
-          'http://pic.sc.chinaz.com/Files/pic/pic9/202004/bpic20176_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202004/bpic20180_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202005/zzpic24841_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202005/zzpic24844_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202005/hpic2393_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202005/hpic2394_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202005/hpic2392_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202005/hpic2396_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202004/zzpic24814_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202004/zzpic24816_s.jpg',
-          'http://pic2.sc.chinaz.com/Files/pic/pic9/202004/bpic20173_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24905_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24904_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24839_s.jpg',
-          'http://pic1.sc.chinaz.com/Files/pic/pic9/202005/zzpic24837_s.jpg'
-        ],
-        imgWidth: 0,
-        height: 0
+        images: [], //存储图片资源
+        imgWidth: 0, //图片的宽度
+        height: 0, //容器的高度，等于图片总的最大高度
+        heightArray: [],  //存储高度数组，用于判断最小高度的图片位置
+        isLoad: true,  //是否继续加载图片
+        surplusW: 0, //是否存在剩余宽度
+        offsetPixel: 5, //左右偏移像素
+        padding: 0 //容器是否存在padding
       }
     },
-    computed: {
-      ...mapGetters({
-        asideState: 'header/CollapseState'
-      })
-    },
     methods: {
-      //处理瀑布流图片
-      //获得图片框的宽度
-      //处理图片瀑布流
-      waterfallHandler() {
-        let pageWidth
-        this.imgWidth = this.$refs.img[0].offsetWidth
-
-        if (this.asideState) {
-          pageWidth = document.body.clientWidth - 60 - 17
-        } else {
-          pageWidth = document.body.clientWidth - 200 - 17
-        }
-        // console.log(pageWidth - 40);
+      /*
+      * 初始化函数
+      * 计算得到可展示页面的宽度
+      * 计算出可排列的列数
+      * 初始化高度数组heightArray
+      * */
+      initHeight() {
+        //获得页面的真实宽度（除去padding、margin、border...）
+        const pageWidth = this.$refs.box.clientWidth
+        this.padding = this.$refs.box.style.paddingLeft.replace(/[^0-9]/ig, "")
+        //其实this.imgWidth是图片所在盒子div的真实宽度
+        this.imgWidth = this.$refs.img[0].clientWidth
         //判断当前窗口可是宽度可以存在多少个列的图片
-        let column = Math.floor(pageWidth / this.imgWidth)
-        // console.log(((pageWidth - 40) - (200 * column)))
+        let column = Math.floor( pageWidth / this.imgWidth)
+        //获得布满column列后是否还剩余宽度，如果剩余，则计算出排列图片的左右间隙
+        console.log(pageWidth);
+        console.log(column * this.imgWidth);
+        this.surplusW = pageWidth - (column * this.imgWidth)
+        console.log(this.surplusW);
         //存储高度数组
-        let heightArray = new Array()
+        this.heightArray = new Array()
         for (let i = 0; i < column; i++) {
-          heightArray[i] = 0
+          this.heightArray[i] = 0
         }
+      },
+      /*
+      * 对图片进行定位处理函数
+      * 处理瀑布流图片
+      * start: 遍历开始的位置
+      * */
+      waterfallHandler(start) {
         //遍历所有图片定位处理
-        for (let j = 0; j < this.$refs.img.length; j++) {
+        for (let j = start; j < this.images.length; j++) {
           let index = 0
-          let minHeight = heightArray[0]
+          //获得当前图片高度
           const itemHeight = this.$refs.img[j].children[0].height
           //获得最小高度
-          for (let i = 0; i < heightArray.length; i++) {
-            if(minHeight > heightArray[i]) {
-              index = i
-              minHeight = heightArray[i]
-            }
-          }
+          let minHeight = Math.min(...this.heightArray)
+          //最小高度索引
+          index = this.heightArray.indexOf(minHeight)
+          //对图片进行定位处理
           this.$refs.img[j].style.position = 'absolute'
-          this.$refs.img[j].style.left = this.imgWidth * index + 63 +'px',
+          // console.log((this.imgWidth * index + (Math.floor(this.surplusW / 2))) + 10);
+          this.$refs.img[j].style.left = this.imgWidth * index + (Math.floor(this.surplusW / 2)) + 'px'
           this.$refs.img[j].style.top = minHeight + 'px'
-          heightArray[index] += itemHeight + 10
+          //把当前高度覆盖当前最小高度索引位置
+          this.heightArray[index] += itemHeight + this.offsetPixel*2
         }
-
-
+        //父容器赋值最大高度，使可显示
+        this.height = Math.max(...this.heightArray)
       }
     },
     mounted() {
-      this.$nextTick(() => {
-        this.height = document.documentElement.scrollHeight - 200
-        setTimeout(() => {
-          this.waterfallHandler()
-        }, 500)
+      const _this = this
+      Axios({
+        url: '/waterFall.json',
+        method: 'get'
+      }).then(res => {
+        if (res.data.code == 200) {
+          this.images = res.data.data
+          this.$nextTick(() => {
+            setTimeout(() => {
+              //初始化最小高度
+              _this.initHeight()
+              _this.waterfallHandler(0)
+            }, 100)
+          })
+        }
+      })
+
+      //监听滚动条滚动，实现懒加载图片
+      window.addEventListener('scroll', function () {
+        //得到可滚动距离
+        const scrollDistance = document.documentElement.scrollHeight - document.documentElement.clientHeight
+        //滚动到顶部的距离
+        const scroll = document.documentElement.scrollTop
+        if (scrollDistance == scroll) {
+          Axios({
+            url: '/waterFall2.json',
+            method: 'get'
+          }).then(res => {
+            if (res.data.code == 200) {
+              const start = _this.images.length
+              for (let item of res.data.data) {
+                _this.images.push(item)
+              }
+              setTimeout(() => {
+                _this.waterfallHandler(start)
+              }, 100)
+            }
+          })
+        }
       })
     }
   }
@@ -116,19 +130,38 @@
   .waterFall-box {
     position: relative;
     text-align: center;
-    overflow-y: auto;
+    overflow-y: hidden;
   }
 
   .waterFall-box .img-box {
-    width: 200px;
+    width: 210px;
     vertical-align: top;
-    display: inline;
-    padding: 5px;
+    display: block;
+    /*padding: 5px;*/
+    float: left;
+  }
+
+  .waterFall-box .img-box img {
+    width: 100%;
   }
 
   .waterFall-box .img-box img:hover {
-    transform: translateY(-5px);
-    transition: all .5s ease;
+    /*transform: translateY(-5px);*/
+    /*transition: transform .5s ease;*/
     box-shadow: 0 0 5px 3px #cccccc;
+  }
+
+  .waterFall-box .img-box img {
+    animation: img .5s ease;
+  }
+
+  @keyframes img {
+    0% {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    100% {
+      opacity: 1;
+    }
   }
 </style>
