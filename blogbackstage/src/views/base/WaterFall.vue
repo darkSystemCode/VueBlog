@@ -1,10 +1,10 @@
 <template>
-  <div class="waterFall-box" :style="{height: (height+70)+'px'}" ref="box">
-    <div class="img-box" v-for="(item, index) in images" :key="index" ref="img" :style="{padding: offsetPixel+'px'}">
+  <div class="waterFall-box" ref="box">
+    <div class="img-box" v-for="(item, index) in images" :key="index" ref="img">
       <img :src="item.img" alt="">
     </div>
-    <footer v-if="isLoad = false"
-            :style="{position: 'absolute', top: (height+50)+'px', color: 'red', left: '50%', transform: 'translateX(-50%)'}">
+    <footer v-if="isLoad == false"
+            :style="{position: 'absolute', top: Math.max(...heightArray)+'px', color: 'red', left: '50%', transform: 'translateX(-50%)'}">
       没有图片加载了...
     </footer>
   </div>
@@ -18,85 +18,85 @@
     data() {
       return {
         images: [], //存储图片资源
-        imgWidth: 0, //图片的宽度
-        height: 0, //容器的高度，等于图片总的最大高度
+        imgWidth: 220, //图片的宽度
         heightArray: [],  //存储高度数组，用于判断最小高度的图片位置
         isLoad: true,  //是否继续加载图片
         surplusW: 0, //是否存在剩余宽度
-        offsetPixel: 5, //左右偏移像素
-        padding: 0 //容器是否存在padding
+        offsetP: 0,
+        count: 0
       }
     },
     methods: {
-      /*
-      * 初始化函数
-      * 计算得到可展示页面的宽度
-      * 计算出可排列的列数
-      * 初始化高度数组heightArray
-      * */
-      initHeight() {
+      /**
+       * 预加载图片资源
+       * */
+      loadImgHeight() {
+        let count = 0 //计数变量 判断是否预加载图片是否完成
+        this.images.forEach((item) => {
+          //使用image类预加载图片
+          let image = new Image()
+          image.src = item.img
+          image.onload = image.onerror = event => {
+            count++
+            if(count == this.images.length) {
+              this.$nextTick(() => {
+                this.init()
+                this.positionImg(0)
+              })
+            }
+          }
+        })
+      },
+      /**
+       * @remarks 初始化
+       * 初始化容器的宽度，计算出容器可容纳多少固定宽度图片的列，
+       * 如果可排列固定宽度的图片宽度无法沾满容器的宽度，需要计算出空余的宽度，固定首图片的left
+       * */
+      init() {
+        //得到页面的宽度
+        const pageWidth_padding = this.$refs.box.clientWidth
+        //页面的padding像素
+        this.offsetP = this.$refs.box.style.paddingLeft.replace(/[^0-9]/ig, "")
         //获得页面的真实宽度（除去padding、margin、border...）
-        const pageWidth = this.$refs.box.clientWidth
-        this.padding = this.$refs.box.style.paddingLeft.replace(/[^0-9]/ig, "")
-        //其实this.imgWidth是图片所在盒子div的真实宽度
-        this.imgWidth = this.$refs.img[0].clientWidth
-        //判断当前窗口可是宽度可以存在多少个列的图片
-        let column = Math.floor( pageWidth / this.imgWidth)
-        //获得布满column列后是否还剩余宽度，如果剩余，则计算出排列图片的左右间隙
-        console.log(pageWidth);
-        console.log(column * this.imgWidth);
+        const pageWidth = pageWidth_padding - (this.offsetP * 2)
+        //计算出当前页面可展示多少列图片
+        const column = Math.floor(pageWidth / this.imgWidth)
+        //偏移像素值
         this.surplusW = pageWidth - (column * this.imgWidth)
-        console.log(this.surplusW);
-        //存储高度数组
-        this.heightArray = new Array()
+        //初始化存储高度数组
         for (let i = 0; i < column; i++) {
-          this.heightArray[i] = 0
+          this.heightArray.push(0)
         }
       },
-      /*
-      * 对图片进行定位处理函数
-      * 处理瀑布流图片
-      * start: 遍历开始的位置
-      * */
-      waterfallHandler(start) {
-        //遍历所有图片定位处理
-        for (let j = start; j < this.images.length; j++) {
-          let index = 0
-          //获得当前图片高度
-          const itemHeight = this.$refs.img[j].children[0].height
+      /**
+       * @remark 定位图片
+       * @param:
+       *  start: 循环开始位置，开始为0，如果滚动条滑到底部，则start为容器存在图片资源的数量即this.images.length
+       *  ----------宽高都计算img的父容器的宽高
+       * */
+      positionImg(start) {
+        //获得img标签的父容器的DOM
+        let parentDom = this.$refs.img
+        for (let i = start; i < this.images.length; i++) {
           //获得最小高度
-          let minHeight = Math.min(...this.heightArray)
-          //最小高度索引
-          index = this.heightArray.indexOf(minHeight)
-          //对图片进行定位处理
-          this.$refs.img[j].style.position = 'absolute'
-          // console.log((this.imgWidth * index + (Math.floor(this.surplusW / 2))) + 10);
-          this.$refs.img[j].style.left = this.imgWidth * index + (Math.floor(this.surplusW / 2)) + 'px'
-          this.$refs.img[j].style.top = minHeight + 'px'
-          //把当前高度覆盖当前最小高度索引位置
-          this.heightArray[index] += itemHeight + this.offsetPixel*2
+          const minHeight = Math.min(...this.heightArray)
+          //获得最小高度索引
+          const index = this.heightArray.indexOf(minHeight)
+          //获得当前图片的高度
+          const currHeight = parentDom[i].clientHeight
+          //定位
+          parentDom[i].style.transform = '50px'
+          parentDom[i].style.position = 'absolute'
+          parentDom[i].style.top = minHeight + 'px'
+          parentDom[i].style.left = this.imgWidth * index + + ((Math.floor((this.surplusW / 2)) + 30)) +  'px'
+          this.heightArray[index] += currHeight
         }
-        //父容器赋值最大高度，使可显示
-        this.height = Math.max(...this.heightArray)
+        //对父容器赋值当前heightArray数组的最大高度
+        this.$refs.box.style.height = Math.max(...this.heightArray) + 50 + 'px'
       }
     },
     mounted() {
       const _this = this
-      Axios({
-        url: '/waterFall.json',
-        method: 'get'
-      }).then(res => {
-        if (res.data.code == 200) {
-          this.images = res.data.data
-          this.$nextTick(() => {
-            setTimeout(() => {
-              //初始化最小高度
-              _this.initHeight()
-              _this.waterfallHandler(0)
-            }, 100)
-          })
-        }
-      })
 
       //监听滚动条滚动，实现懒加载图片
       window.addEventListener('scroll', function () {
@@ -110,15 +110,33 @@
             method: 'get'
           }).then(res => {
             if (res.data.code == 200) {
-              const start = _this.images.length
-              for (let item of res.data.data) {
-                _this.images.push(item)
+              _this.count += 1
+              if(_this.count == 4) {
+                _this.isLoad = false
               }
-              setTimeout(() => {
-                _this.waterfallHandler(start)
-              }, 100)
+              if(_this.isLoad) {
+                const start = _this.images.length
+                for (let item of res.data.data) {
+                  _this.images.push(item)
+                }
+                //滑到底部继续加载图片，this.$nextTick()异步加载，待资源虚拟DOM加载完毕
+                _this.$nextTick(() => {
+                  _this.positionImg(start)
+                })
+              }
             }
           })
+        }
+      })
+    },
+    created() {
+      Axios({
+        url: '/waterFall.json',
+        method: 'get'
+      }).then(res => {
+        if (res.data.code == 200) {
+          this.images = res.data.data ? res.data.data : []
+          this.loadImgHeight()
         }
       })
     }
@@ -137,31 +155,29 @@
     width: 210px;
     vertical-align: top;
     display: block;
-    /*padding: 5px;*/
     float: left;
   }
 
   .waterFall-box .img-box img {
     width: 100%;
+    animation: imgBox .5s ease-in-out;
   }
 
   .waterFall-box .img-box img:hover {
-    /*transform: translateY(-5px);*/
-    /*transition: transform .5s ease;*/
-    box-shadow: 0 0 5px 3px #cccccc;
+    transform: translateY(-3px);
+    transition: transform .5s ease-in-out;
+    box-shadow: 0 20px 20px 2px #737373;
   }
 
-  .waterFall-box .img-box img {
-    animation: img .5s ease;
-  }
-
-  @keyframes img {
-    0% {
+  @keyframes imgBox {
+    0%{
       opacity: 0;
-      transform: translateY(-50px);
+      transform: translateY(-100px);
     }
     100% {
       opacity: 1;
+      transform: translateX(0);
     }
   }
+
 </style>

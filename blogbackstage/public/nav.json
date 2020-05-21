@@ -76,6 +76,10 @@
         {
           "title": "图片瀑布屏",
           "path": "/waterfall"
+        },
+        {
+          "title": "步骤条（流程条）",
+          "path": "/steps"
         }
       ]
     }

@@ -239,13 +239,13 @@
           series: [
             {
               name: '发布量',
-              data: [20, 932, 901, 934, 590, 330, 150],
+              data: [0, 0, 0, 0, 0, 10, 5],
               type: 'line',
               smooth: true
             },
             {
               name: '活跃量',
-              data: [200, 52, 101, 254, 90, 130, 500],
+              data: [1, 1, 0, 2, 10, 5, 1],
               type: 'line',
               smooth: true
             }

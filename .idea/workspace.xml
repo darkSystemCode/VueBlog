@@ -2,16 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ab89cc5d-04d5-4441-bf96-e59a759661a4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/blogbackstage/src/components/Paging.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogbackstage/src/components/RightFun.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/components/RightFun.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/ArticleManager.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/ArticleManager.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/Mail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/Mail.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/MineInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/MineInfo.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/QuillEditor.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/QuillEditor.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/Register.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/Register.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/SetNav.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/SetNav.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/blogbackstage/src/views/base/Steps.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blogbackstage/public/nav.json" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/public/nav.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blogbackstage/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/Welcome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/Welcome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/base/WaterFall.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/base/WaterFall.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blogbackstage/src/views/layout/rightMain/Footer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/blogbackstage/src/views/layout/rightMain/Footer.vue" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,7 +23,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/blogbackstage" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1bLAVyY7Bj6MyaZ336kc3um54K7" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -38,6 +36,18 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -56,5 +66,16 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

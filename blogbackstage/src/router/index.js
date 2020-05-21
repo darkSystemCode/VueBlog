@@ -25,10 +25,16 @@ const routes = [
   },
   { //注册页面
     path: '/register',
+    meta: {
+      title: '注册页面'
+    },
     component: register
   },
   {
     path: '/login',
+    meta: {
+      title: '登录页面'
+    },
     component: login
   },
   {
@@ -123,6 +129,13 @@ const routes = [
           title: '图片瀑布流'
         },
         component: () => import('../views/base/WaterFall')
+      },
+      {
+        path: '/steps',
+        meta: {
+          title: '步骤流程条'
+        },
+        component: () => import('../views/base/Steps')
       }
     ]
   }
