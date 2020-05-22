@@ -1,11 +1,11 @@
 <template>
   <div class="rightF" :style="{left: (clientX-200)+'px', top: (clientY - 65)+'px'}">
     <ul>
-      <li class="closeCurr" @click="closeCurr">关闭当前页面</li>
-      <li class="closeLeft" @click="closeLeft">关闭左侧页面</li>
-      <li class="closeRight" @click="closeRight">关闭右侧页面</li>
-      <li class="closeOther" @click="closeOther">关闭其他页面</li>
-      <li class="closeAll" @click="closeAll">关闭全部页面</li>
+      <li class="closeCurr" @click="closeCurr"><i class="el-icon-arrow-down"></i>关闭当前页面</li>
+      <li class="closeLeft" @click="closeLeft"><i class="el-icon-back"></i>关闭左侧页面</li>
+      <li class="closeRight" @click="closeRight"><i class="el-icon-right"></i>关闭右侧页面</li>
+      <li class="closeOther" @click="closeOther"><i class="el-icon-minus"></i>关闭其他页面</li>
+      <li class="closeAll" @click="closeAll"><i class="el-icon-close"></i>关闭全部页面</li>
     </ul>
   </div>
 </template>

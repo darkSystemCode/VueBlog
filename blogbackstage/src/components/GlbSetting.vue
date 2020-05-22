@@ -38,6 +38,7 @@
 </template>
 
 <script>
+  import { mapState, mapGetters } from 'vuex'
 
   export default {
     name: "GlbSetting",
@@ -50,13 +51,29 @@
     data() {
       return {
         //存储容器的颜色数组 最好和VUEX初始化的颜色值一致，这样保持了颜色选择器的颜色值显示， 否则颜色选择器的颜色为空白
-        asideColor: '#303133', //左侧导航栏背景色
-        aTextColor: '#FFFFFF', //左侧导航栏文字颜色
-        aActiveColor: '#ff6600', //左侧导航栏选中时颜色
-        headerBColor: '#606266', //顶部背景色
-        headerColor: '#FFFFFF', //顶部图标、文字颜色
+        asideColor: '', //左侧导航栏背景色
+        aTextColor: '', //左侧导航栏文字颜色
+        aActiveColor: '', //左侧导航栏选中时颜色
+        headerBColor: '', //顶部背景色
+        headerColor: '', //顶部图标、文字颜色
         doubleOpen: true //是否只打开一个菜单
       }
+    },
+    computed: {
+      ...mapGetters({
+        VasideColor: 'globalSetting/AsideColor',
+        VaTextColor: 'globalSetting/ATextColor',
+        VaActiveColor: 'globalSetting/ActiveColor',
+        VheaderBColor: 'globalSetting/HeaderBColor',
+        VheaderColor: 'globalSetting/HeaderColor'
+      })
+    },
+    mounted() {
+      this.asideColor = this.VasideColor
+      this.aTextColor = this.VaTextColor
+      this.aActiveColor = this.VaActiveColor
+      this.headerBColor = this.VheaderBColor
+      this.headerColor = this.VheaderColor
     },
     methods: {
       beforeC(done) { //窗口关闭时触发

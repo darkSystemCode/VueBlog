@@ -82,6 +82,17 @@
           "path": "/steps"
         }
       ]
+    },
+    {
+      "icon": "el-icon-error",
+      "title": "错误页面",
+      "path": "/error",
+      "child": [
+        {
+          "title": "404页面",
+          "path": "/404"
+        }
+      ]
     }
   ]
 }

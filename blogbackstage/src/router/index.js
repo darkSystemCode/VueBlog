@@ -39,6 +39,9 @@ const routes = [
   },
   {
     path: '/404',
+    meta: {
+      title: '错误页面-404'
+    },
     component: notPath
   },
   {

@@ -85,11 +85,10 @@
           //获得当前图片的高度
           const currHeight = parentDom[i].clientHeight
           //定位
-          parentDom[i].style.transform = '50px'
           parentDom[i].style.position = 'absolute'
           parentDom[i].style.top = minHeight + 'px'
           parentDom[i].style.left = this.imgWidth * index + + ((Math.floor((this.surplusW / 2)) + 30)) +  'px'
-          this.heightArray[index] += currHeight
+          this.heightArray[index] += currHeight+5
         }
         //对父容器赋值当前heightArray数组的最大高度
         this.$refs.box.style.height = Math.max(...this.heightArray) + 50 + 'px'
@@ -160,6 +159,7 @@
 
   .waterFall-box .img-box img {
     width: 100%;
+    border-radius: 10px;
     animation: imgBox .5s ease-in-out;
   }
 

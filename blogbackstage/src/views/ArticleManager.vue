@@ -17,6 +17,10 @@
       <el-radio v-model="type" label="转载" @change="radioChange" :style="{lineHeight: '40px'}">转载</el-radio>
       <el-button type="warning" @click="defaultF">初始化条件</el-button>
     </div>
+    <JsonExcel :data="tableData" :fields="fields" worksheet="sheet1" name="文章" :before-generate="beforeDownL" :before-finish="beforeFin">
+      <el-button type="primary">DOWNLOAD <i class="fa fa-download"></i></el-button>
+      <el-progress :percentage="progress" v-if="showProgress"></el-progress>
+    </JsonExcel>
     <el-table :data="tableData" class="table" :max-height="getHeight" empty-text="本来无一物，何处惹尘埃">
       <el-table-column fixed prop="articleNum" label="文章编号" width="180"></el-table-column>
       <el-table-column prop="createTime" :formatter="dateFormat" label="创建日期" width="180"></el-table-column>
@@ -43,6 +47,7 @@
   import Paging from "../components/Paging"
   import {axiosUtil} from "../network/axiosUtil"
   import formatTime from "../utils/formatTime"
+  import JsonExcel from "vue-json-excel"
 
   export default {
     name: "ArticleManager",
@@ -51,9 +56,66 @@
         articleNum: '',
         times: '',
         type: '',
-        tableData: [],
+        tableData: [
+          {
+            articleNum: 'sdf215g4sd5s21',
+            createTime: '1589360053',
+            title: 'Vue高阶',
+            content: 'Vue高阶知识大全，一个月快速入门，从零到精英，其实挺厉害了...',
+            category: 'Vue',
+            type: '原创',
+            updateTime: '',
+            readingNum: '600',
+            likeNum: '15'
+          },
+          {
+            articleNum: 'sdf215g4sd5s21',
+            createTime: '1589360053',
+            title: 'Vue高阶',
+            content: 'Vue高阶知识大全，一个月快速入门，从零到精英，其实挺厉害了...',
+            category: 'Vue',
+            type: '原创',
+            updateTime: '',
+            readingNum: '600',
+            likeNum: '15'
+          },
+          {
+            articleNum: 'sdf215g4sd5s21',
+            createTime: '1589360053',
+            title: 'Vue高阶',
+            content: 'Vue高阶知识大全，一个月快速入门，从零到精英，其实挺厉害了...',
+            category: 'Vue',
+            type: '原创',
+            updateTime: '',
+            readingNum: '600',
+            likeNum: '15'
+          },
+          {
+            articleNum: 'sdf215g4sd5s21',
+            createTime: '1589360053',
+            title: 'Vue高阶',
+            content: 'Vue高阶知识大全，一个月快速入门，从零到精英，其实挺厉害了...',
+            category: 'Vue',
+            type: '原创',
+            updateTime: '',
+            readingNum: '600',
+            likeNum: '15'
+          }
+        ],
+        fields: {
+          '文章编号': 'articleNum',
+          '创建时间': 'createTime',
+          '标题': 'title',
+          '内容': 'content',
+          '分类': 'category',
+          '类型': 'type',
+          '阅读量': 'readingNum',
+          '点赞量': 'likeNum'
+        },
         page: 1, //当前页码
-        total: 0 //返回数据的总数
+        total: 0, //返回数据的总数
+        showProgress: false, //是否显示导出excel进度条
+        progress: 0 //进度条进度
       }
     },
     computed: {
@@ -163,6 +225,23 @@
       currPage(page) {
         this.page = page
         this.requestInterface(this.articleNum, this.times[0], this.times[1], this.type, this.page)
+      },
+      /*
+      * 导出excel前函数
+      * */
+      beforeDownL() {
+        this.showProgress = true
+        for (let i = 0; i < 50; i++) {
+          this.progress += 2
+        }
+      },
+      /*
+      * 导出excel完成前函数
+      * */
+      beforeFin() {
+        setTimeout(() => {
+          this.showProgress = false
+        }, 500)
       }
     },
     created() {
@@ -180,7 +259,8 @@
       })
     },
     components: {
-      Paging
+      Paging,
+      JsonExcel
     }
   }
 </script>
