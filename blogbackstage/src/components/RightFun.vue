@@ -118,10 +118,11 @@
     top: 20px;
     width: 140px;
     min-width: 140px;
-    background-color: #d9d9d9;
+    background-color: #FFFFFF;
+    border: 1px solid #cccccc;
     z-index: 2000;
     padding: 10px 0;
-    border-radius: 10px;
+    border-radius: 6px;
   }
 
   .rightF ul {
@@ -141,6 +142,10 @@
   .rightF ul li:hover {
     background-color: #5F4B8B;
     color: #FFFFFF;
+  }
+
+  .rightF ul li i {
+    padding-right: 8px;
   }
 
 </style>

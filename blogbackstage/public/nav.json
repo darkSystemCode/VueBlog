@@ -11,11 +11,13 @@
       "child": [
         {
           "title": "主控制台",
-          "path": "/welcome"
+          "path": "/welcome",
+          "isClose": false
         },
         {
           "title": "个人档案",
-          "path": "/profile"
+          "path": "/profile",
+          "isClose": true
         }
       ]
     },
@@ -25,15 +27,18 @@
       "child": [
         {
           "title": "设置导航",
-          "path": "/nav"
+          "path": "/nav",
+          "isClose": true
         },
         {
           "title": "设置个人信息",
-          "path": "/mineInfo"
+          "path": "/mineInfo",
+          "isClose": true
         },
         {
           "title": "修改密码",
-          "path": "/updatePass"
+          "path": "/updatePass",
+          "isClose": true
         }
       ]
     },
@@ -43,18 +48,21 @@
       "child": [
         {
           "title": "富文本编辑器",
-          "path": "/quillEditor"
+          "path": "/quillEditor",
+          "isClose": true
         },
         {
           "title": "文章管理",
-          "path": "/articleManager"
+          "path": "/articleManager",
+          "isClose": true
         }
       ]
     },
     {
       "icon": "el-icon-chat-line-square",
       "title": "留言管理",
-      "path": "/mail"
+      "path": "/mail",
+      "isClose": true
     },
     {
       "icon": "el-icon-coin",
@@ -63,23 +71,28 @@
       "child": [
         {
           "title": "滑块",
-          "path": "/slider"
+          "path": "/slider",
+          "isClose": true
         },
         {
           "title": "文件上传",
-          "path": "/uploadFile"
+          "path": "/uploadFile",
+          "isClose": true
         },
         {
           "title": "卡片列表",
-          "path": "/cardList"
+          "path": "/cardList",
+          "isClose": true
         },
         {
           "title": "图片瀑布屏",
-          "path": "/waterfall"
+          "path": "/waterfall",
+          "isClose": true
         },
         {
           "title": "步骤条（流程条）",
-          "path": "/steps"
+          "path": "/steps",
+          "isClose": true
         }
       ]
     },
@@ -90,7 +103,8 @@
       "child": [
         {
           "title": "404页面",
-          "path": "/404"
+          "path": "/error_404",
+          "isClose": true
         }
       ]
     }

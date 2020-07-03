@@ -5,16 +5,13 @@ const state = {
     {
       title: '主控制台',
       path: '/welcome',
+      isClose: false,
       activeIndex: 0
     }
   ], //存储点击左侧导航栏后的导航名，作为标题显示头
   crumbs: [
     '控制台','主控制台'
   ], //存储面包屑
-// {
-//   parentTitle: '控制台',
-//     childTitle: '主控制台'
-// }
   activeIndex: 0,  //当前活跃的标题下标
   count: 0  //下标增值变量
 }

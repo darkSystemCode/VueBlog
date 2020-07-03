@@ -87,9 +87,9 @@
       }
     },
     created() {
-      let profile = JSON.parse(sessionStorage.getItem("profile"))
+      let profile = JSON.parse(sessionStorage.getItem("user"))
       if(profile) {
-        this.name = profile
+        this.name = profile.username
       }
     }
   }

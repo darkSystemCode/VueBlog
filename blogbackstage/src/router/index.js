@@ -17,6 +17,9 @@ const profile = () => import('../views/Profile')
 const notPath = () => import('../views/error/NotPath_404')
 const slider = () => import('../views/base/Slider')
 const uploadFile = () => import('../views/base/UploadFile')
+const carList = () => import('../views/base/CardList')
+const waterFall = () => import('../views/base/WaterFall')
+const stepLine = () => import('../views/base/Steps')
 
 const routes = [
   {
@@ -38,7 +41,7 @@ const routes = [
     component: login
   },
   {
-    path: '/404',
+    path: '/error_404',
     meta: {
       title: '错误页面-404'
     },
@@ -124,21 +127,21 @@ const routes = [
         meta: {
           title: '卡片列表'
         },
-        component: () => import('../views/base/CardList')
+        component: carList
       },
       {
         path: '/waterfall',
         meta: {
           title: '图片瀑布流'
         },
-        component: () => import('../views/base/WaterFall')
+        component: waterFall
       },
       {
         path: '/steps',
         meta: {
           title: '步骤流程条'
         },
-        component: () => import('../views/base/Steps')
+        component: stepLine
       }
     ]
   }
@@ -154,15 +157,16 @@ const router = new VueRouter({
 * 全局前置路由
 * */
 router.beforeEach((to, from, next) => {
+  //动态渲染标题
   document.title = to.meta.title
   if (to.matched.length === 0) {
-    next('/404')
+    next('/error_404')
   }
   //校验是否登录，防止不登录，直接进入其他页面
-  if ((to.path == '/login' && from.path === '/') || (to.path == '/welcome' && from.path === '/login')) {
+  if ((to.path == '/login' && from.path === '/') || (to.path == '/welcome' && from.path === '/login') || to.path == '/login') {
     next()
   } else {
-    if (sessionStorage.getItem('profile') === null) {
+    if (sessionStorage.getItem('user') === null) {
       next('/login')
     } else {
       next()

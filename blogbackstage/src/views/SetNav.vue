@@ -1,30 +1,42 @@
 <template>
   <div>
-    <el-button type="primary" icon="el-icon-plus" circle @click="visible(true, 1, '')"></el-button>
-    <span style="color: #C0C4CC"><i class="el-icon-back"></i>生成导航栏请点这</span>
+    <div class="box-content">
+      <el-row :gutter="20">
+        <template v-if="navData.length !== 0">
+          <el-col :span="6" class="col" v-for="item in navData" :key="item.nid">
+            <div class="content" ref="contents">
+              <div class="header">{{item.title}}</div>
+              <div class="main">
+                <template v-if="item.children != null || childNavData != ''">
+                  <div class="child" v-for="(childItem, index) in item.children" :key="index">
+                    <div v-if="item.nid === childItem.navNumber">{{childItem.childTitle}}</div>
+                  </div>
+                </template>
+                <div class="child">
+                  <el-button type="primary" icon="el-icon-plus" circle @click="visible(true, 2, item.nid)"
+                             size="mini"></el-button>
+                </div>
+              </div>
+            </div>
+          </el-col>
+        </template>
+        <el-col :span="6" class="col">
+          <div class="add-box">
+            <el-button type="primary" icon="el-icon-plus" circle @click="visible(true, 1, '')"></el-button>
+            <span style="color: #C0C4CC"><i class="el-icon-back"></i>生成导航栏请点这</span>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+    <!--添加导航标题的弹窗dialog-->
     <el-dialog title="添加导航标题" :visible.sync="dialogVisible" width="55%">
       <CreateNav v-if="dialogVisible" @chil-result="getResult" :level="this.level"></CreateNav>
     </el-dialog>
-    <el-collapse v-model="activeName" accordion @change="openCollapse">
-      <el-collapse-item v-for="item in navData" :title="item.title" :name="item.nid" :key="item.nid">
-        <template v-if="childNavData.length != 0">
-          <div v-for="child in childNavData" :key="item.ncid">
-            <p v-if="item.nid == child.navNumber">
-              {{child.childTitle}}
-            </p>
-          </div>
-        </template>
-        <el-button type="primary" icon="el-icon-plus" circle @click="visible(true, 2, item.nid)"
-                   size="mini"></el-button>
-        <span style="color: #C0C4CC"><i class="el-icon-back"></i>生成导航栏请点这</span>
-      </el-collapse-item>
-    </el-collapse>
   </div>
 </template>
 
 <script>
   import CreateNav from "./CreateNav";
-  import {setNav, getNav, setChildNav, getChildNav} from "../network/navRequest";
 
   export default {
     name: "SetNav",
@@ -42,12 +54,20 @@
       getResult(title, path) {
         if (title != null && path != null) {
           if (this.level === 1) { //一级导航
-            setNav(title, path).then(res => {
-              if (res.code === "013") {
+            this.$request({
+              url: '/setNav',
+              data: {
+                title: title,
+                path: path
+              },
+              method: 'post'
+            }).then(res => {
+              if (res.code === 200) {
+                console.log(res.data)
                 this.$message({
                   duration: 2000,
                   type: 'success',
-                  message: res.msg
+                  message: res.data
                 })
                 //添加导航成功添加数据到navData中
                 this.navData.push({
@@ -55,29 +75,44 @@
                   path: path
                 })
                 this.dialogVisible = false
-              } else if (res.code === "014") {
+              } else if (res.code === 201) {
                 this.$message.error(res.msg)
               }
             }).catch(err => {
               console.log(err);
             })
           } else if (this.level === 2) { //二级导航
-            setChildNav(this.currChildIndex, title, path).then(res => {
-              if (res.code === "015") {
+            this.$request({
+              url: '/setChildNav',
+              method: 'post',
+              data: {
+                navNumber: this.currChildIndex,
+                childTitle: title,
+                childPath: path
+              }
+            }).then(res => {
+              if (res.code === 200) {
                 this.$message({
                   duration: 2000,
                   type: 'success',
-                  message: res.msg
+                  message: res.data
                 })
-                //添加导航成功添加数据到navData中
-                //请求子导航
-                getChildNav(this.activeName).then(res => {
-                  if (res.code === "200") {
-                    this.childNavData = res.data;
+                //添加导航成功后，把当前的数据存入父级导航的children字段中，
+                //动态更新子导航的数据（也可以查询数据库更新，其实都一样的，
+                // 数据能保持一致就好，至于那种实现方法，自行选择咯，但是说到底，最好还是读取后台数据更新较好，哈哈哈）
+                //我一样提供了一个借口 getChildNav(activeName)
+                for (let item of this.navData) {
+                  if (item.nid === this.currChildIndex) {
+                    item.children.push({
+                      navNumber: this.currChildIndex,
+                      childTitle: title,
+                      childPath: path
+                    })
                   }
-                })
+                }
+
                 this.dialogVisible = false
-              } else if (res.code === "016") {
+              } else if (res.code === 201) {
                 this.$message.error(res.msg)
               }
             }).catch(err => {
@@ -90,23 +125,23 @@
         this.dialogVisible = state
         this.level = level
         this.currChildIndex = id
-      },
-      openCollapse(activeName) { //折叠面板发生改变时触发 activeName：当前被打开的折叠面板的name
-        //请求子导航
-        getChildNav(activeName).then(res => {
-          if (res.code === "200") {
-            this.childNavData = res.data;
-          }
-        })
       }
     },
-    created() {
-      getNav().then(res => {
-        if (res.code === "200") {
+    mounted() {
+      this.$request({
+        url: '/getNav',
+        method: 'post'
+      }).then(res => {
+        if (res.code === 200) {
           this.navData = res.data;
         }
       }).catch(err => {
         console.log(err);
+      })
+
+      //待页面加载完毕后执行
+      this.$nextTick(() => {
+        // console.log(this.$refs.contents);
       })
     },
     components: {
@@ -123,4 +158,40 @@
   .codeShow {
     background-color: #C0C4CC;
   }
+
+  .box-content .col {
+    padding-bottom: 10px;
+  }
+
+  .box-content .add-box {
+    min-height: 98px;
+    display: block;
+    border: 1px dashed #5F4B8B;
+    border-radius: 5px;
+    padding: 10px;
+    line-height: 78px;
+    text-align: center;
+  }
+
+  .box-content .content {
+    border: 1px solid #5F4B8B;
+    border-radius: 5px;
+  }
+
+  .box-content .content .header {
+    height: 50px;
+    line-height: 50px;
+    background: #cccccc;
+    text-align: center;
+  }
+
+  .box-content .content .main {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .box-content .content .child, .box-content .content .main {
+    padding: 10px;
+  }
+
 </style>

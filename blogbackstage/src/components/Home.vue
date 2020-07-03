@@ -1,13 +1,16 @@
 <template>
   <el-container>
+    <!--左侧导航菜单-->
     <el-aside style="width: auto" class="aside aside-flex"
               :class="{'aside-show': getCollapseState == false?true:false,
                       'aside-hide':getCollapseState == true?true:false}">
-      <Aside></Aside>
+      <Aside @selected-path="selectedPath"></Aside>
     </el-aside>
     <el-container class="container-aside" :style="{paddingLeft: (getCollapseState == false?'200px':'64px')}">
+      <!--置顶头部-->
       <Header></Header>
-      <el-main :style="{paddingTop: '60px', paddingLeft: '0', paddingRight: '0'}">
+      <el-main class="main" :style="{paddingTop: '60px', paddingLeft: '0', paddingRight: '0'}">
+        <!--头部标题菜单-->
         <AsideTitle></AsideTitle>
         <!--页面的展示-->
         <transition name="compAnimate" appear>
@@ -16,6 +19,7 @@
           </keep-alive>
         </transition>
       </el-main>
+      <!--尾部版权信息-->
       <Footer></Footer>
     </el-container>
   </el-container>
@@ -46,10 +50,13 @@
     },
     watch: {
       '$route': function (to) {
-        this.createTabs(to.path)
+        // this.createTabs(to.path)
       }
     },
     methods: {
+      selectedPath(path) {
+        this.createTabs(path)
+      },
       /**
        * 动态添加标题标签函数
        * path：当前点击左侧导航的path
@@ -86,9 +93,12 @@
                     let count = this.getCount
                     count++
                     this.$store.commit('header/setCount', count)
+                    //设置左侧菜单项
                     asideItem.title = nav[i].child[j].title
                     asideItem.path = nav[i].child[j].path
                     asideItem.activeIndex = count
+                    asideItem.isClose = nav[i].child[j].isClose
+                    //保存到vuex汇总
                     this.$store.commit('header/setAside', asideItem)
                     this.$store.commit('header/setActiveIndex', count)
                     this.setCrumbs(parentTitle, childTitle)
@@ -120,6 +130,7 @@
                   asideItem.title = nav[i].title
                   asideItem.path = nav[i].path
                   asideItem.activeIndex = count
+                  asideItem.isClose = nav[i].isClose
                   this.$store.commit('header/setAside', asideItem)
                   this.$store.commit('header/setActiveIndex', count)
                   this.setCrumbs(childTitle, '')
@@ -160,9 +171,6 @@
 </script>
 
 <style scoped>
-  .el-aside {
-    color: #333;
-  }
 
   .el-tabs--card > .el-tabs__header {
     position: sticky;
@@ -173,27 +181,6 @@
     background-color: #FFFFFF;
     margin: 0;
     padding-right: 20px;
-  }
-
-  .el-row {
-    margin-bottom: 15px;
-  }
-
-  /*组件过渡动画*/
-  .compAnimate-enter {
-    opacity: 0;
-    transform: translateY(-60px);
-  }
-
-  .compAnimate-leave-to {
-    opacity: 0;
-  }
-
-  .compAnimate-enter-active {
-    transition: all .8s ease-in-out;
-  }
-  .compAnimate-leave-active {
-    transition: all .2s ease;
   }
 
 </style>

@@ -1,7 +1,7 @@
 <template>
   <el-form ref="form" :model="form" :rules="rules" status-icon label-width="80px" :inline="true">
     <el-form-item label="标题" prop="name">
-      <el-input v-model="form.name" clearable placeholder="请输入导航标题"></el-input>
+      <el-input v-model="form.name" clearable placeholder="请输入导航标题" autofocus></el-input>
     </el-form-item>
     <el-form-item label="路径" prop="path">
       <el-input v-model="form.path" clearable placeholder="请输入全英文的导航路径"></el-input>

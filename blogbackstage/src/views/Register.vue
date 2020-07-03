@@ -62,7 +62,6 @@
 </template>
 
 <script>
-  import {axiosUtil} from "../network/axiosUtil"
 
   export default {
     name: "Register",
@@ -188,7 +187,7 @@
           if (state) {
             //判断是否验证码已通过校验
             if(this.checkCode) {
-              axiosUtil({
+              this.$request({
                 url: '/toRegister',
                 method: 'post',
                 params: {
@@ -227,7 +226,7 @@
         if(this.registerForm.username != '' && this.registerForm.password != '' && this.registerForm.verifyPass != '') {
 
           //发送邮件，获得校验码
-          axiosUtil({
+          this.$request({
             url: '/sendCheckCode',
             method: 'get',
             params: {

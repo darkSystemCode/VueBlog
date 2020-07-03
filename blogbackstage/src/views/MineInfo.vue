@@ -4,26 +4,6 @@
       <el-form-item label="个人昵称" prop="username" required>
         <el-input v-model.trim="form.username" placeholder="输入昵称"></el-input>
       </el-form-item>
-      <!--<el-form-item label="头像">
-        <el-upload class="avatar-uploader"
-                   :action="baseUrl+'/saveAvatar'"
-                   :show-file-list="false"
-                   :on-success="handleAvatarSuccess"
-                   :before-upload="beforeAvatarUpload">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="背景墙">
-        <el-upload class="avatar-uploader"
-                   :action="baseUrl+'/saveAvatar'"
-                   :show-file-list="false"
-                   :on-success="backAvatarSuccess"
-                   :before-upload="beforeAvatarUpload">
-          <img v-if="backImgUrl" :src="backImgUrl" class="avatar">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-      </el-form-item>-->
       <el-form-item label="个人技能" prop="skill">
         <el-select v-model="form.value"
                    multiple
@@ -51,7 +31,6 @@
 </template>
 
 <script>
-  import {setMineInfo} from "../network/minInfoRequest";
 
   export default {
     name: "MineInfo",
@@ -103,7 +82,17 @@
       onSubmit(form) {
         this.$refs[form].validate(valid => {
           if (valid) {
-            setMineInfo(this.form.username, this.form.value.toString(), this.form.textarea, this.imageUrl, this.backImgUrl).then(res => {
+            this.$request({
+              url: '/setMine',
+              data: {
+                author: this.form.username,
+                skill: this.form.value.toString(),
+                introduce: this.form.textarea,
+                avatar: this.imageUrl,
+                backgAvatar: this.backImgUrl
+              },
+              method: 'post'
+            }).then(res => {
               if (res.code == "017") {
                 this.$message({
                   type: 'success',

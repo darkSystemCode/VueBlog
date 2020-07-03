@@ -89,16 +89,14 @@
           this.$notify({
             title: '成功',
             message: '关闭左侧导航栏',
-            type: 'success',
-            duration: 1000
+            type: 'success'
           });
         } else {
           this.$store.commit('header/setCollapse', false)
           this.$notify({
             title: '成功',
             message: '打开左侧导航栏',
-            type: 'success',
-            duration: 1000
+            type: 'success'
           });
         }
       },
@@ -117,7 +115,10 @@
           })
         } else if (command == "logout") {
           this.$router.push({
-            path: '/login'
+            path: '/login',
+            query: {
+              autoL: 2
+            }
           })
         }
       },

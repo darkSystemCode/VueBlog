@@ -40,7 +40,6 @@
 
 <script>
   import Paging from "../components/Paging"
-  import {axiosUtil} from "../network/axiosUtil"
   import formatTime from '../utils/formatTime'
 
   export default {
@@ -123,7 +122,7 @@
        * */
       sendEmail(replyForm) {
         let data = this.$refs[replyForm].model
-        axiosUtil({
+        this.$request({
           url: '/sendEmail',
           method: 'POST',
           data: {
@@ -139,7 +138,7 @@
       },
       currPage(page) {
         this.page = page
-        axiosUtil({
+        this.$request({
           url: '/getEmailAdv',
           method: 'get',
           params: {
@@ -153,7 +152,7 @@
       }
     },
     created() {
-      axiosUtil({
+      this.$request({
         url: '/getEmailAdv',
         method: 'get',
         params: {

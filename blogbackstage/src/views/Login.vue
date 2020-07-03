@@ -6,7 +6,7 @@
         <div class="form" form>
           <el-form :model="loginForm" :rules="rules" ref="login" label-width="70px" label-position="left">
             <el-form-item label="用户名" prop="username">
-              <el-input v-model="loginForm.username" @focus="showUnTip=true" autofocus></el-input>
+              <el-input v-model.trim="loginForm.username" @focus="showUnTip=true" autofocus></el-input>
               <div tip v-if="showUnTip == true && this.loginForm.username == '' ">
                 <p>
                   1、用户名可以是中文、英文、数字或组合
@@ -20,7 +20,7 @@
               </div>
             </el-form-item>
             <el-form-item label="密 码" prop="password">
-              <el-input show-password v-model="loginForm.password" @focus="showPsTip=true"></el-input>
+              <el-input show-password v-model.trim="loginForm.password" @focus="showPsTip=true"></el-input>
               <div tip v-if="showPsTip == true && this.loginForm.password == '' ">
                 <p>
                   1、密码可以是中文、英文、数字或组合
@@ -34,11 +34,11 @@
               </div>
             </el-form-item>
             <el-form-item label="确认密码" prop="verifyPass">
-              <el-input show-password v-model="loginForm.verifyPass"></el-input>
+              <el-input show-password v-model.trim="loginForm.verifyPass"></el-input>
             </el-form-item>
             <el-form-item marginBottom>
               <el-checkbox v-model="autoLogin">自动登录</el-checkbox>
-              <el-checkbox v-model="remPs">记住密码</el-checkbox>
+              <!--              <el-checkbox v-model="remPs">记住密码</el-checkbox>-->
             </el-form-item>
             <el-form-item>
               <el-button type="primary" :style="{width: '100%'}" @click="login('login')">登 录</el-button>
@@ -55,8 +55,6 @@
 </template>
 
 <script>
-  import {axiosUtil} from "../network/axiosUtil";
-
   export default {
     name: "Login",
     data() {
@@ -93,7 +91,7 @@
         showUnTip: false, //是否显示用户名输入提示
         showPsTip: false, //是否显示密码输入提示
         autoLogin: false, //是否勾选自动登录功能
-        remPs: false, //是否勾选记住密码
+        // remPs: false, //是否勾选记住密码
         height: '',
         loginForm: {
           username: '',
@@ -116,62 +114,81 @@
       }
     },
     methods: {
+      async getLogin() {
+        let res = this.$request({
+          url: '/toLogin',
+          method: 'post',
+          params: {
+            username: this.loginForm.username,
+            password: this.loginForm.password,
+            autoL: this.autoLogin
+          }
+        })
+        return res
+      },
+      login_success() {
+        this.getLogin().then(res => {
+          if (res != null && res.code === 200) {
+            window.localStorage.setItem("username", JSON.stringify(this.loginForm.username))
+            window.localStorage.setItem("autoLogin", JSON.stringify(this.autoLogin))
+            sessionStorage.setItem("user", JSON.stringify(res.data))
+            this.$message({
+              type: 'success',
+              message: res.msg,
+              duration: 2000
+            })
+            //登录成功 跳转到首页
+            this.$router.push({
+              path: '/home'
+            })
+          } else {
+            //登录失败继续登录
+            this.$message.error(res.msg)
+            this.loginForm.username = ''
+            this.loginForm.password = ''
+            this.loginForm.verifyPass = ''
+            this.autoLogin = false
+            this.remPs = false
+          }
+        })
+      },
+      //测试账号 ，不用过后台
+      testAccount() {
+        //测试账号
+        if (this.loginForm.username === "test" && this.loginForm.password === "test123" && this.loginForm.verifyPass === "test123") {
+          /*把登录成功的个人信息存入session域中*/
+          let profile = new Object()
+          profile.username = this.loginForm.username
+          profile.password = this.loginForm.password
+          sessionStorage.setItem("user", JSON.stringify({
+            username: profile.username,
+            token: '154954264jun'
+          }))
+          this.$message({
+            type: 'success',
+            message: '登录成功',
+            duration: 2000
+          })
+          //登录成功 跳转到首页
+          this.$router.push({
+            path: '/home'
+          })
+        } else {
+          //登录失败继续登录
+          this.$message.error("登录失败，用户名或密码错误，请重新登录")
+          this.$router.push({
+            path: '/login'
+          })
+        }
+      },
       login(form) {
         this.$refs[form].validate(state => {
           if (state) {
-            //校验后台用户数据
-            axiosUtil({
-              url: '/toLogin',
-              method: 'post',
-              params: {
-                username: this.loginForm.username,
-                password: this.loginForm.password
-              }
-            }).then(res => {
-              if(res != null && res.code === 200) {
-                if(this.remPs == true) {
-                  let obj = new Array()
-                  obj.push({
-                    remember: true,
-                    user: res.data
-                  })
-                  window.localStorage.setItem("remember", JSON.stringify(obj))
-                }
-                if(this.autoLogin == true) {
-                  window.localStorage.setItem("autoLogin", this.autoLogin)
-                }
-                sessionStorage.setItem("user", JSON.stringify(res.data))
-                this.$router.push({
-                  path: '/home'
-                })
-              }
-            })
-
-            //测试账号
-            if(this.loginForm.username === "test" && this.loginForm.password === "test123" && this.loginForm.verifyPass === "test123") {
-              /*把登录成功的个人信息存入session域中*/
-              let profile = new Object()
-              profile.username = this.loginForm.username
-              profile.password = this.loginForm.password
-              sessionStorage.setItem("profile", JSON.stringify({
-                username: profile.username,
-                token: '154954264jun'
-              }))
-              this.$message({
-                type: 'success',
-                message: '登录成功',
-                duration: 2000
-              })
-              //登录成功 跳转到首页
-              this.$router.push({
-                path: '/home'
-              })
+            if (this.loginForm.username === "test") {
+              this.testAccount()
             } else {
-              //登录失败继续登录
-              this.$message.error("登录失败，用户名或密码错误，请重新登录")
-              this.$router.push({
-                path: '/login'
-              })
+              //校验后台用户数据
+              this.login_success()
             }
           }
         })
@@ -201,11 +218,17 @@
 
       //进来先判断，上次登录是否勾选了自动登录和记住密码
       //勾选了记住密码
-      let obj = window.localStorage.getItem("remember")
-      if(obj != null) {
-        this.remPs = obj.remember
-        this.loginForm.username = obj.user.username
-        this.loginForm.password = obj.user.password
+      this.loginForm.username = JSON.parse(window.localStorage.getItem("username"))
+      const autoL = JSON.parse(window.localStorage.getItem("autoLogin"))
+      if (autoL === true) {
+        this.autoLogin = autoL
+        this.loginForm.password = 'password'
+        this.loginForm.verifyPass = 'password'
+        if (parseInt(this.$route.query.autoL) !== 2) {
+          setTimeout(() => {
+            this.login_success()
+          }, 1500)
+        }
       }
     }
   }

@@ -28,7 +28,7 @@
       <el-table-column prop="content" label="文章内容" width="400"></el-table-column>
       <el-table-column prop="category" label="类别" width="100"></el-table-column>
       <el-table-column prop="type" label="类型" width="100"></el-table-column>
-      <el-table-column prop="updateTime" label="修改时间" width="120"></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" :formatter="dateFormat" width="120"></el-table-column>
       <el-table-column prop="readingNum" label="阅读量" width="100"></el-table-column>
       <el-table-column prop="likeNum" label="点赞量" width="100"></el-table-column>
       <el-table-column fixed="right" label="操作" width="120">
@@ -45,7 +45,6 @@
 
 <script>
   import Paging from "../components/Paging"
-  import {axiosUtil} from "../network/axiosUtil"
   import formatTime from "../utils/formatTime"
   import JsonExcel from "vue-json-excel"
 
@@ -137,7 +136,7 @@
       dateFormat(row, col) {
         let resDate
         let date = row[col.property]
-        if (date != null) {
+        if (date != 0) {
           resDate = this.formatTime(date)
         }
         return resDate
@@ -197,7 +196,7 @@
         this.requestInterface(articleNum, startTime, endTime, value, this.page)
       },
       requestInterface(articleNum, startTime, endTime, type, currPage) {
-        axiosUtil({
+        this.$request({
           url: '/getAllArticle',
           method: 'get',
           params: {
@@ -245,7 +244,7 @@
       }
     },
     created() {
-      axiosUtil({
+      this.$request({
         url: '/getAllArticle',
         method: 'get',
         params: {

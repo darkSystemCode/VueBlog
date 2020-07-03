@@ -1,20 +1,28 @@
 <template>
   <div class="titleNavBox" :style="{width: (getCollapseState == false)?'calc(100% - 200px)':'calc(100% - 64px)'}">
     <div style="position: relative">
-      <i v-if="isShow" leftIcon class="el-icon-d-arrow-left scroll" @click="toLeft"></i>
+      <!--      <i v-if="isShow" leftIcon class="el-icon-d-arrow-left scroll" @click="toLeft"></i>-->
       <div class="titleNav" @click.right.prevent="mouseRight">
-        <el-tag v-for="(item, index) in getAsideTitle"
-                :key="index"
-                ref="tag"
-                :active-index="item.activeIndex"
-                :class="{title: true, active: (active === item.activeIndex)?true:false, marginR: (index != getAsideTitle.length - 1)}"
-                @click="toUrl(item.path, item.activeIndex)"
-                @close="closeTag(item.title, item.activeIndex)"
-                :closable="(item.title == '主控制台')? false : true">
+        <div v-for="(item, index) in getAsideTitle"
+             :key="index"
+             ref="tag"
+             :active-index="item.activeIndex"
+             :class="{title: true, active: (active === item.activeIndex)?true:false}"
+             :closable="(item.title == '主控制台')? false : true"
+             @click="toUrl(item.path, item.activeIndex)"
+             @mouseover="titleMouseover(index, item.activeIndex)"
+             @mouseleave="titleMouseleave(index, item.activeIndex)">
           {{item.title}}
-        </el-tag>
+          <!--使用stop修饰符，避免事件继续向上传播-->
+          <i class="el-icon-close titleClose"
+             v-if="item.isClose"
+             :ref="'close'+index"
+             :style="{width: (item.activeIndex == active)? '14px':'0'}"
+             @click.stop="closeTag(item.title, item.activeIndex)">
+          </i>
+        </div>
       </div>
-      <i v-if="isShow" rightIcon class="el-icon-d-arrow-right scroll" @click="toRight"></i>
+      <!--      <i v-if="isShow" rightIcon class="el-icon-d-arrow-right scroll" @click="toRight"></i>-->
       <component v-if="mouseR" is="RightFun" :clientX="clientX" :clientY="clientY" @close-r="closeRightF"></component>
     </div>
   </div>
@@ -47,6 +55,41 @@
     },
     methods: {
       /*
+      *定位面包屑，通过path路径更新定位到即将跳转到的路由路径的面包屑
+      * @params：
+      *   path：即将跳转到的路由路径
+      * */
+      locationCrumbs(path) {
+        //匹配到左侧导航数据，存入vuex/header/crumbs
+        let parentTitle
+        let childTitle
+        const nav = this.getNavs.nav
+        for (let i = 0; i < nav.length; i++) {
+          parentTitle = nav[i].title
+          if (nav[i].child) {
+            for (let j = 0; j < nav[i].child.length; j++) {
+              if (nav[i].child[j].path == path) {
+                childTitle = nav[i].child[j].title
+                this.setCrumbs(parentTitle, childTitle)
+                return;
+              }
+            }
+          } else {
+            parentTitle = nav[i].title
+            this.setCrumbs(parentTitle, childTitle)
+            return;
+          }
+        }
+      },
+      /*
+      * 设置面包屑，把当前面包屑信息存入到vuex中
+      * */
+      setCrumbs(pt, ct) {
+        let crumbs = new Array()
+        crumbs.push(pt, ct)
+        this.$store.commit('header/setCrumbs', crumbs)
+      },
+      /*
       * 点击导航标题，跳转到对应的导航页面
       *   path: 当前标题的导航路径
       *   index:当前标题标签的活跃下标
@@ -57,53 +100,13 @@
         this.$router.push({
           path: path
         })
-
-        //匹配到左侧导航数据，存入vuex/header/crumbs
-        let parentTitle
-        let childTitle
-        // let crumbs = new Array()
-        const nav = this.getNavs.nav
-        for (let i = 0; i < nav.length; i++) {
-          parentTitle = nav[i].title
-          if(nav[i].child) {
-            for (let j = 0; j < nav[i].child.length; j++) {
-              if(nav[i].child[j].path == path) {
-                childTitle = nav[i].child[j].title
-                // crumbs.push({
-                //   parentTitle: parentTitle,
-                //   childTitle: childTitle
-                // })
-                this.setCrumbs(parentTitle,childTitle)
-                // this.$store.commit('header/setCrumbs', crumbs)
-                return;
-              }
-            }
-          } else {
-            parentTitle = nav[i].title
-            // crumbs.push({
-            //   parentTitle: parentTitle,
-            //   childTitle: ''
-            // })
-            this.setCrumbs(parentTitle,childTitle)
-            // this.$store.commit('header/setCrumbs', crumbs)
-            return;
-          }
-        }
-      },
-      setCrumbs(pt,ct) {
-        let crumbs = new Array()
-        // crumbs.push({
-        //   'parentTitle': pt,
-        //   'childTitle': ct
-        // })
-        crumbs.push(pt,ct)
-        this.$store.commit('header/setCrumbs', crumbs)
+        this.locationCrumbs(path)
       },
       /*
-    * 删除当前标题函数
-    * title: 当前被删除的标题标签
-    * index: 当前被删除的标题标签的下标
-    * */
+      * 删除当前标题函数
+      * title: 当前被删除的标题标签
+      * index: 当前被删除的标题标签的下标
+      * */
       closeTag(title, index) {
         /*
         *1.判断当前被删除标题标签下标是否是正则活跃的下标，如果是则
@@ -111,27 +114,47 @@
         * 删除当前标题标签后，下一个被活跃的标题为其右侧的标题标签，否则，为其左侧的标题标签
         * 否则，直接删除即可
         * */
-        if (index === this.active) {
-          for (let i = 0; i < this.getAsideTitle.length; i++) {
-            if (this.getAsideTitle[i].activeIndex == index) {
-              //判断下一个活跃的标题标签
+        for (let i = 0; i < this.getAsideTitle.length; i++) {
+          if (this.getAsideTitle[i].activeIndex == index) {
+            //当标题tag为选中状态被删除时才需要计算下一个被选中状态的标题tag
+            if (this.getAsideTitle[i].activeIndex === this.active) {
+              //判断下一个活跃的标题标签 右侧有标题则选择右侧，没有则选择左侧
               let nextIndex = this.getAsideTitle[i + 1] || this.getAsideTitle[i - 1]
               this.$store.commit('header/setActiveIndex', nextIndex.activeIndex)
               //跳转到路径
-              const activePath = nextIndex.path
+              let activePath = nextIndex.path
               this.$router.push({
                 path: activePath
               })
+              this.locationCrumbs(activePath)
             }
+            //得到除了当前被删除的标题标签外的所有标题标签
+            let result = this.getAsideTitle.filter(item => {
+              return item.title != title
+            })
+            this.$store.commit('header/delOrAddAside', result)
+            return
           }
         }
-        /*
-        * 得到除了当前被删除的标题标签外的所有标题标签
-        * */
-        let result = this.getAsideTitle.filter(item => {
-          return item.title != title
-        })
-        this.$store.commit('header/delOrAddAside', result)
+      },
+      /*
+      * 鼠标的悬浮（titleMouseover）、离开（titleMouseleave）事件,当且仅当不是选中状态和下标为0的标题才触发事件
+      * */
+      titleMouseover(index, activeIndex) {
+        if (activeIndex !== this.active && index !== 0) {
+          const node = 'close' + index
+          this.$nextTick(() => {
+            this.$refs[node][0].style.width = '14px'
+          })
+        }
+      },
+      titleMouseleave(index, activeIndex) {
+        if (activeIndex !== this.active && index !== 0) {
+          const node = 'close' + index
+          this.$nextTick(() => {
+            this.$refs[node][0].style.width = '0'
+          })
+        }
       },
       /*
       * 左侧滚动
@@ -199,30 +222,36 @@
       //关闭右键功能
       closeRightF(state) {
         this.mouseR = state
+      },
+      /**
+       * sessionStorage：session存储,当页面刷新、销毁时触发
+       * */
+      sessionStorage() {
+        sessionStorage.setItem("titleItem", JSON.stringify({
+          titleItem: this.getAsideTitle,
+          activeIndex: this.active,
+          crumbs: this.getCrumbs
+        }))
       }
     },
     mounted() {
-      /**
+      /*
        * 监听页面是否执行刷新，如果刷新则把当前的标题标签存入vuex中，供刷新后重新渲染
        * */
       let _this = this
       window.addEventListener('beforeunload', e => {
-        sessionStorage.setItem("titleItem", JSON.stringify({
-          titleItem: _this.getAsideTitle,
-          activeIndex: _this.active,
-          crumbs: _this.getCrumbs
-        }))
+        _this.sessionStorage()
       })
       /*
       * 监听窗口的变化，如果条件符合，显示左右方向滚动按钮
       * */
-      window.addEventListener('resize', function() {
+      window.addEventListener('resize', function () {
         _this.showBtn()
       })
       /*
       * 监听整个页面的点击事件，如果mouseR(标题导航打开右键功能时)关闭这个功能
       * */
-      window.addEventListener('click', function() {
+      window.addEventListener('click', function () {
         _this.mouseR = false
       })
     },
@@ -245,6 +274,9 @@
         }
       }
     },
+    destroyed() {
+      this.sessionStorage()
+    },
     components: {
       RightFun
     }
@@ -253,21 +285,19 @@
 
 
 <style scoped>
+  .titleNavBox {
+    position: fixed;
+    height: 42px;
+    z-index: 200;
+    border-bottom: 1px solid #e6e6e6;
+  }
 
   .titleNav {
-    position: absolute;
-    left: 0;
-    right: 0;
+    display: flex;
+    align-items: center;
     height: 42px;
-    max-height: 42px;
-    line-height: 42px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    background-color: #FFFFFF;
-    transition: all 3s ease-in-out;
+    min-height: 42px;
+    background: #ffffff;
   }
 
   .titleNav::-webkit-scrollbar {
@@ -275,37 +305,32 @@
   }
 
   .title {
-    position: relative;
-    cursor: pointer;
-    background-color: #d9d9d9;
-    color: #4d4d4d;
-    border: 0px;
-    padding-left: 15px;
+    height: inherit;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #e6e6e6;
+    padding: 0 15px;
     font-size: 14px;
-    box-shadow: 1px 1px 1px 1px #999999;
+    cursor: pointer;
   }
 
-  .active:before {
-    content: ' ';
-    width: 8px;
-    height: 8px;
-    background-color: #00cc00;
-    /*opacity: 0.5;*/
-    border-radius: 5px;
-    z-index: 1000;
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    transform: translateY(-50%);
+  .title .titleClose {
+    position: relative;
+    width: 0;
+    overflow: hidden;
+    margin-left: 5px;
+    transition: all ease-in-out .4s;
+    -webkit-transition: all ease-in-out .4s;
+  }
+
+  .title .titleClose:hover {
+    background: #cccccc;
+    border-radius: 20px;
   }
 
   .active {
-    background-color: #5F4B8B;
-    color: #ffffff;
-  }
-
-  .marginR {
-    margin-right: 6px;
+    border-bottom: 1px solid #FFFFFF;
+    color: #5F4B8B;
   }
 
   [leftIcon], [rightIcon] {
@@ -329,11 +354,5 @@
     box-shadow: 0 2px 5px 0 #bfbfbf;
   }
 
-  .titleNavBox {
-    position: fixed;
-    height: 42px;
-    z-index: 200;
-    box-shadow: 0 1px 3px 0 #595959;
-  }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <el-card shadow="never" :body-style="{padding: '0 10px'}">
+  <div>
     <el-form :inline="true" :model="form" :rules="rules" ref="form">
       <el-form-item prop="title" style="width: 60em">
         <el-input v-model="form.title" placeholder="请输入文章标题"
@@ -36,7 +36,7 @@
                    @close-before="closeBefore"
                    @submit-Article="submitArticle">
     </ArticleDialog>
-  </el-card>
+  </div>
 </template>
 
 <script>
@@ -56,7 +56,6 @@
   hljs.registerLanguage('java', java)
 
   import ArticleDialog from "./ArticleDialog";
-  import {axiosUtil} from "../network/axiosUtil";
 
   export default {
     name: "QuillEditor",
@@ -65,6 +64,7 @@
         content: '', //文章内容
         visible: false, //提交文章是否打开对话框
         dataArray: [], //存储传递给ArticleDialog子组件的数据
+        articleNum: '', //文章编号
         editorOption: {
           modules: {
             toolbar: [
@@ -98,6 +98,19 @@
         }
       }
     },
+    watch: {
+      $route(to) {
+        //监听路由的变化，保证能实时更新文章
+        if (this.$route.path === to.path) {
+          if (to.query.articleNum !== undefined) {
+            this.articleNum = to.query.articleNum
+            if (this.articleNum != '') {
+              this.getOriginArticle(this.articleNum)
+            }
+          }
+        }
+      }
+    },
     methods: {
       onEditorBlur(quill) {
         // console.log('editor blur!', quill)
@@ -110,14 +123,14 @@
       },
       save(form) { //保存文章
         this.$refs[form].validate(valid => {
-          if(valid) {
+          if (valid) {
             alert("保存中...")
           }
         })
       },
       release(form) { //弹出文章对话框
         this.$refs[form].validate(valid => {
-          if(valid) {
+          if (valid) {
             this.visible = true
           }
         })
@@ -127,8 +140,8 @@
       },
       submitArticle(state, category, type, editState) {
         this.visible = state
-        if(editState) { //执行文章的编辑
-          axiosUtil({
+        if (editState) { //执行文章的编辑
+          this.$request({
             url: '/updateArticle',
             method: 'post',
             data: {
@@ -139,7 +152,7 @@
               articleNum: this.$route.query.articleNum
             }
           }).then(res => {
-            if(res.code === 19) {
+            if (res.code === 19) {
               this.$message({
                 type: 'success',
                 message: '编辑文章成功'
@@ -147,15 +160,15 @@
               //重置当前表单
               this.form.title = ''
               this.content = ''
-            } else if(res.code === 20) {
+            } else if (res.code === 20) {
               this.$message.error("编辑文章失败")
-            } else if(res.code === "010") {
+            } else if (res.code === "010") {
               this.$message.error("图片插入失败")
             }
           })
         } else { //添加文章
           //弹出对话框，供选择文章类型，文章标签（分类）...
-          axiosUtil({
+          this.$request({
             url: '/submitArticle',
             method: 'post',
             data: {
@@ -165,17 +178,17 @@
               type: type
             }
           }).then(res => {
-            if(res.code === 10) {
+            if (res.code === 10) {
               this.$message({
                 type: 'error',
                 message: res.msg
               })
-            } else if(res.code === 12) {
+            } else if (res.code === 12) {
               this.$message({
                 type: 'error',
                 message: res.msg
               })
-            } else if(res.code === 11) {
+            } else if (res.code === 11) {
               this.$message({
                 type: 'success',
                 message: res.msg
@@ -188,6 +201,27 @@
             console.log(err);
           })
         }
+      },
+      //通过文章编号获得文章
+      getOriginArticle(articleNum) {
+        //组件创建的时候请求通过文章的编号得到当前文章，并赋值
+        this.$request({
+          url: '/getArticle',
+          method: 'get',
+          params: {
+            articleNum
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            this.content = res.data.content
+            this.form.title = res.data.title
+            this.dataArray.push({
+              type: res.data.type,
+              category: res.data.category,
+              edit: true //这是是否编辑的标记
+            })
+          }
+        })
       }
     },
     computed: {
@@ -203,24 +237,7 @@
       ArticleDialog
     },
     mounted() {
-      //组件创建的时候请求通过文章的编号得到当前文章，并赋值
-      axiosUtil({
-        url: '/getArticle',
-        method: 'get',
-        params: {
-          articleNum: this.$route.query.articleNum
-        }
-      }).then(res => {
-        if(res.code === 200) {
-          this.content = res.data.content
-          this.form.title = res.data.title
-          this.dataArray.push({
-            type: res.data.type,
-            category: res.data.category,
-            edit: true //这是是否编辑的标记
-          })
-        }
-      })
+      this.getOriginArticle(this.$route.query.articleNum)
     }
   }
 </script>

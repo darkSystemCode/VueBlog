@@ -55,7 +55,7 @@ a {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 120;
+  z-index: 500;
   height: 100%;
 }
 
@@ -68,7 +68,7 @@ a {
   top: 0;
   right: 0;
   left: 200px;
-  z-index: 100;
+  z-index: 400;
 }
 
 .el-container {

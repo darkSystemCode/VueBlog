@@ -12,6 +12,7 @@
       </div>
     </div>
     <el-menu :default-active="String(activeNav)"
+             @select="selected"
              class="el-menu-vertical"
              :collapse="getCollapseState"
              :background-color="getAsideColor"
@@ -58,6 +59,11 @@
         getDoubleOpen: 'globalSetting/DoubleOpen',
         getCollapseState: 'header/CollapseState'
       })
+    },
+    methods: {
+      selected(path) {
+        this.$emit('selected-path', path)
+      }
     },
     created() {
       //获得导航的json数据
