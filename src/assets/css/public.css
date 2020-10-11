@@ -1,0 +1,93 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #C0C4CC;
+}
+
+.el-main {
+  position: relative;
+}
+
+.drawer .el-drawer__header {
+  height: 40px;
+  line-height: 40px;
+  margin: 0 !important;
+  padding: 10px !important;;
+}
+
+.aside {
+  box-shadow: 0 0 3px 2px #000000;
+}
+
+.el-menu {
+  border: 0;
+}
+
+/*logo栏位*/
+.avatar {
+  position: fixed;
+  top: 0;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  overflow: hidden;
+  z-index: 100;
+  background-color: #5F4B8B;
+  border-bottom: 1px solid;
+}
+
+.avatar:hover {
+  box-shadow: 0 0 6px #b3b3b3 inset;
+  transition: all 0.5s ease;
+}
+
+/*左侧导航*/
+.avatar img {
+  vertical-align: middle;
+}
+
+/*aside固定*/
+.aside-flex {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  height: 100%;
+}
+
+.aside::-webkit-scrollbar { /*隐藏滚动条*/
+  display: none;
+}
+
+.header-flex { /*头部固定*/
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 200px;
+  z-index: 100;
+}
+
+.el-container {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+.el-container, .header-flex, .aside, .avatar {
+  transition: all .3s ease-in-out;
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+}
+
+.list span {
+  color: #a6a6a6!important;
+}
+
+#nprogress .bar {
+  height: 4px;
+}
+

@@ -1,0 +1,105 @@
+{
+  "LOGO": {
+      "id": "1",
+      "img": "/imgs/logo.png",
+      "title": "颜购商场管理系统"
+    },
+  "nav": [
+    {
+      "icon": "el-icon-s-platform",
+      "title": "控制台",
+      "child": [
+        {
+          "title": "主控制台",
+          "path": "/Welcome"
+        },
+        {
+          "title": "个人档案",
+          "path": "/Profile"
+        }
+      ]
+    },
+    {
+      "icon": "el-icon-setting",
+      "title": "账号管理",
+      "child": [
+        {
+          "title": "设置导航",
+          "path": "/SetNav"
+        },
+        {
+          "title": "设置个人信息",
+          "path": "/MineInfo"
+        },
+        {
+          "title": "修改密码",
+          "path": "/HomeUpdatePass"
+        }
+      ]
+    },
+    {
+      "icon": "fa fa-book",
+      "title": "商品管理",
+      "child": [
+        {
+          "title": "文章管理",
+          "path": "/ArticleManager"
+        }
+      ]
+    },
+    {
+      "icon": "el-icon-chat-line-square",
+      "title": "广告管理",
+      "path": "/Mail"
+    },
+    {
+      "icon": "el-icon-coin",
+      "title": "基础演示",
+      "path": "/base",
+      "child": [
+        {
+          "title": "滑块",
+          "path": "/Slider"
+        },
+        {
+          "title": "文件上传",
+          "path": "/UploadFile"
+        },
+        {
+          "title": "卡片列表",
+          "path": "/CardList"
+        },
+        {
+          "title": "图片瀑布屏",
+          "path": "/WaterFall"
+        },
+        {
+          "title": "步骤条（流程条）",
+          "path": "/Steps"
+        }
+      ]
+    },
+    {
+      "icon": "el-icon-error",
+      "title": "错误页面",
+      "path": "/error",
+      "child": [
+        {
+          "title": "404页面",
+          "path": "/NotPath_404"
+        }
+      ]
+    },
+    {
+      "icon": "el-icon-error",
+      "title": "错误页面(2)",
+      "path": "/error",
+      "child": [
+        {
+          "title": "405页面",
+          "path": "/NotPath_405"
+        }
+      ]
+    }
+  ]
+}
