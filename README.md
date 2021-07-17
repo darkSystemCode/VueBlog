@@ -32,6 +32,53 @@ password: test123
 2.优化代码，修复若干bug
 3.对接后台接口，后面会持续优化
 4.修改动态路由的格式
-  
+  public/nav.json
+    {
+      "icon": "el-icon-s-platform",
+      "meta": {
+        "title": "控制台"
+      },
+      "child": [
+        {
+          "meta": {
+            "title": "主控制台",
+            "close": false
+          },
+          "path": "/Welcome"
+        },
+        {
+          "meta": {
+            "title": "个人档案",
+            "close": true
+          },
+          "path": "/Profile"
+        }
+      ]
+    }
+ 数据按vue官方路由格式配置 把数据全部放在元数组meta中，可以嵌套多层child（配置了child需要把当前导航的path去掉），如上代码拓展：
+  {
+      "icon": "el-icon-s-platform",
+      "meta": {
+        "title": "控制台"
+      },
+      "child": [
+        {
+          "meta": {
+            "title": "主控制台",
+            "close": false
+          },
+          child: [
+           {...相同格式配置路由对象}
+          ]
+        },
+        {
+          "meta": {
+            "title": "个人档案",
+            "close": true
+          },
+          "path": "/Profile"
+        }
+      ]
+    }
 # 最后，如果此项目能帮助到大家，希望给个star
 # 联系方式： QQ：154954264
