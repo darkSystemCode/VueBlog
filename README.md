@@ -16,8 +16,7 @@ npm run serve   ----执行/运行项目
 npm run build  
 
 # 后台管理系统测试账号：
-username: test  
-password: test123
+以数据库user表为准
 
 # 在线Demo
 云服务器已过期
