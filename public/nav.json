@@ -1,0 +1,109 @@
+{
+  "LOGO": {
+    "id": "1",
+    "img": "/imgs/logo.png",
+    "title": "博客管理系统"
+  },
+  "nav": [
+    {
+      "icon": "el-icon-s-platform",
+      "meta": {
+        "title": "控制台"
+      },
+      "child": [
+        {
+          "meta": {
+            "title": "主控制台",
+            "close": false
+          },
+          "path": "/Welcome"
+        },
+        {
+          "meta": {
+            "title": "个人档案",
+            "close": true
+          },
+          "path": "/Profile"
+        }
+      ]
+    },
+    {
+      "icon": "el-icon-user-solid",
+      "meta": {
+        "title": "角色管理",
+        "close": true,
+        "authorized": "svip"
+      },
+      "path": "/user/User"
+    },
+    {
+      "icon": "el-icon-setting",
+      "meta": {
+        "title": "基础设置"
+      },
+      "child": [
+        {
+          "meta": {
+            "title": "设置导航",
+            "authorized": "svip",
+            "close": true
+          },
+          "path": "/SetNav"
+        },
+        {
+          "meta": {
+            "title": "个人信息",
+            "close": true
+          },
+          "path": "/MineInfo"
+        },
+        {
+          "meta": {
+            "title": "修改密码",
+            "close": true
+          },
+          "path": "/ChangePW"
+        }
+      ]
+    },
+    {
+      "icon": "fa fa-book",
+      "meta": {
+        "title": "文章分类"
+      },
+      "child": [
+        {
+          "meta": {
+            "title": "编辑器",
+            "close": true
+          },
+          "path": "/QuillEditor"
+        },
+        {
+          "meta": {
+            "title": "文章管理",
+            "close": true
+          },
+          "path": "/article/ArticleManager"
+        }
+      ]
+    },
+    {
+      "icon": "el-icon-chat-line-square",
+      "meta": {
+        "title": "留言管理",
+        "close": true,
+        "authorized": "svip"
+      },
+      "path": "/Mail"
+    },
+    {
+      "icon": "el-icon-unlock",
+      "meta": {
+        "title": "权限不足",
+        "close": true
+      },
+      "path": "/Unauthorized"
+    }
+  ]
+}

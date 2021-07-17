@@ -1,0 +1,4 @@
+{
+  "baseUrl": "../view/base",
+  "moduleUrl": ["article"]
+}
