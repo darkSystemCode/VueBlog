@@ -34,7 +34,7 @@
     "@babel/preset-env": "^7.13.8",
     "@vue/cli-plugin-babel": "^4.5.11",
     "@vue/cli-plugin-router": "~4.2.0",
-    "@vue/cli-service": "~4.2.0",
+    "@vue/cli-service": "~5.0.8",
     "babel-plugin-dynamic-import-webpack": "^1.1.0",
     "sass-loader": "^11.0.1",
     "vue-template-compiler": "^2.6.12"
