@@ -5,7 +5,7 @@
       <li :class="{closeLeft: true, notClick: leftBtn}" @click="closeLeft"><i class="el-icon-back"></i>关闭左侧页面</li>
       <li :class="{closeRight: true, notClick: rightBtn}" @click="closeRight"><i class="el-icon-right"></i>关闭右侧页面</li>
       <li class="closeOther" @click="closeOther"><i class="el-icon-minus"></i>关闭其他页面</li>
-      <li class="closeAll" @click="closeAll"><i class="el-icon-close"></i>关闭全部页面</li>
+      <li :class="{closeAll: true, notClick: allBtn}" @click="closeAll"><i class="el-icon-close"></i>关闭全部页面</li>
     </ul>
   </div>
 </template>
@@ -34,7 +34,8 @@ export default {
       index: 0,
       rightBtn: false,
       leftBtn: false,
-      currBtn: false
+      currBtn: false,
+      allBtn: false
     }
   },
   computed: {
@@ -97,8 +98,9 @@ export default {
       * 4.关闭右侧页面 closeRight
       * 5.关闭其他页面 closeOther
       * 使用filter（）函数 过滤不符合的结果返回， 并需要响应式改动tabsItem tabsPath
+      * 2021-7-15 透明框无法根据导航标题tabs删除而移动
       * */
-    closeCurr() { //2021-7-15 透明框无法根据导航标题tabs删除而移动
+    closeCurr() {
       /*
       如果当前活跃下标的标题被删除了 需要判断下一个活跃的tabs标签
       （下一个活跃标题可以左右移动 ）
@@ -193,7 +195,7 @@ export default {
       if (this.getAsideTitle.length > 1) {
         //筛选出首页（不删除）
         let result = this.getAsideTitle.filter(item => {
-          return item.meta.activeIndex == '0'
+          return item.meta.first
         })
         this.$store.commit('header/delOrAddAside', result)
         this.$store.commit('header/setActiveIndex', result[0].meta.activeIndex)

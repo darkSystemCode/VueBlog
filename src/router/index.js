@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Routes from '../utils/autoRouter'
+import store from '@/store/store'
 
 Vue.use(VueRouter)
 //固定动态加载路由
@@ -36,7 +37,6 @@ const routes = [
   },
   {
     path: '/Home',
-    redirect: '/Welcome',
     component: home,
     children: []
   },

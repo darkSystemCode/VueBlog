@@ -14,14 +14,17 @@
         {
           "meta": {
             "title": "主控制台",
-            "close": false
+            "close": false,
+            "first": true,
+            "prePath": "/base"
           },
           "path": "/Welcome"
         },
         {
           "meta": {
             "title": "个人档案",
-            "close": true
+            "close": true,
+            "prePath": "/base"
           },
           "path": "/Profile"
         }
@@ -32,9 +35,10 @@
       "meta": {
         "title": "角色管理",
         "close": true,
-        "authorized": "svip"
+        "authorized": "svip",
+        "prePath": "/base/user"
       },
-      "path": "/user/User"
+      "path": "/User"
     },
     {
       "icon": "el-icon-setting",
@@ -46,21 +50,24 @@
           "meta": {
             "title": "设置导航",
             "authorized": "svip",
-            "close": true
+            "close": true,
+            "prePath": "/base"
           },
           "path": "/SetNav"
         },
         {
           "meta": {
             "title": "个人信息",
-            "close": true
+            "close": true,
+            "prePath": "/base"
           },
           "path": "/MineInfo"
         },
         {
           "meta": {
             "title": "修改密码",
-            "close": true
+            "close": true,
+            "prePath": "/base"
           },
           "path": "/ChangePW"
         }
@@ -75,16 +82,18 @@
         {
           "meta": {
             "title": "编辑器",
-            "close": true
+            "close": true,
+            "prePath": "/base"
           },
           "path": "/QuillEditor"
         },
         {
           "meta": {
             "title": "文章管理",
-            "close": true
+            "close": true,
+            "prePath": "/base/article"
           },
-          "path": "/article/ArticleManager"
+          "path": "/ArticleManager"
         }
       ]
     },
@@ -93,7 +102,8 @@
       "meta": {
         "title": "留言管理",
         "close": true,
-        "authorized": "svip"
+        "authorized": "svip",
+        "prePath": "/base"
       },
       "path": "/Mail"
     },
@@ -101,9 +111,46 @@
       "icon": "el-icon-unlock",
       "meta": {
         "title": "权限不足",
-        "close": true
+        "close": true,
+        "prePath": "/base"
       },
       "path": "/Unauthorized"
+    },
+    {
+      "icon": "el-icon-unlock",
+      "meta": {
+        "title": "test1test1test1",
+        "close": true,
+        "prePath": "/base"
+      },
+      "path": "/Unauthorized1"
+    },
+    {
+      "icon": "el-icon-unlock",
+      "meta": {
+        "title": "test2test2",
+        "close": true,
+        "prePath": "/base"
+      },
+      "path": "/Unauthorized2"
+    },
+    {
+      "icon": "el-icon-unlock",
+      "meta": {
+        "title": "test3",
+        "close": true,
+        "prePath": "/base"
+      },
+      "path": "/Unauthorized3"
+    },
+    {
+      "icon": "el-icon-unlock",
+      "meta": {
+        "title": "test4",
+        "close": true,
+        "prePath": "/base"
+      },
+      "path": "/Unauthorized4"
     }
   ]
 }

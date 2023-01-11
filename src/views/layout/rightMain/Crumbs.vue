@@ -38,21 +38,16 @@
     text-align: left;
   }
 
-  .crumbsTran-enter {
-    transform: translateX(1rem);
-    opacity: 1;
-  }
-
-  .crumbsTran-leave-to {
-    transform: translateX(2rem);
-    opacity: 0;
-  }
-
   .crumbsTran-enter-active {
-    transition: all .5s ease-out;
+    transition: all .5s ease;
   }
 
   .crumbsTran-leave-active {
-    transition: all .3s ease;
+    transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  }
+
+  .crumbsTran-enter-active, .crumbsTran-leave-active {
+    transform: translateX(10px);
+    opacity: 0;
   }
 </style>

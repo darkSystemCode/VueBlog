@@ -1,5 +1,4 @@
 import navs from './getNavs'
-import Test from "@/views/base/Test";
 
 /**
  * 动态加载vueRouter 加载格式和官方的VueRouter一致，这里只是对VueRouter格式做定制化
@@ -28,8 +27,9 @@ async function getNav() {
             continue
           }
           if (com.path == "/NotPath_404") continue
-          //通过当前组件的path（即nav.json配置的path）使用import导入组件 与平常导入组件用法一致
-          const componentFun = import(`../views/base${com.path}`)
+          // 通过当前组件的path（即nav.json配置的path）使用import导入组件 与平常导入组件用法一致
+          // 因为webpack的import()使用静态编译，所以必须指定一个字符串前缀，全变量无法通过编译，所以文件只能在/views/文件夹下拓展
+          const componentFun = import(`@/views${com.meta.prePath}${com.path}`)
           //使用懒加载方式注入组件
           com.component = () => componentFun
           com.component().then(res => {
@@ -46,7 +46,7 @@ async function getNav() {
           my_routes.push(com)
         }
       } else {
-        const componentFun = import(`../views/base${item[i].path}`)
+        const componentFun = import(`@/views${item[i].meta.prePath}${item[i].path}`)
         item[i].component = () => componentFun
         my_routes.push(item[i])
       }

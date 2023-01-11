@@ -1,32 +1,39 @@
 <template>
-  <div class="titleNav" @click.right.prevent.self.stop="cancelMouseRight"
-       :style="{backgroundColor: '#e4ebf5',width: '100%'}">
-    <!--      <i v-if="isShow" leftIcon class="el-icon-d-arrow-left scroll" @click="toLeft"></i>-->
+  <div class="titleContainer"
+       @mouseover="moveShow = true"
+       @mouseleave="moveShow = false">
+    <i v-if="moveFlag && moveShow" leftIcon class="el-icon-d-arrow-left scroll" :style="{left: titleLeft + 'px'}" @click="toLeft"></i>
+    <div class="titleNav" ref="titleNav" @click.right.prevent.self.stop="cancelMouseRight"
+         :style="{width: '100%', left: titleLeft}">
+      <div v-for="(item, index) in getAsideTitle"
+           :key="index"
+           ref="tag"
+           style="margin: 0 5px"
+           :active-index="item.meta.activeIndex"
+           :class="{titleBtn: true,
+                  // animation: true,
+                  active: (getActive === item.meta.activeIndex)? true: false}"
+           @click="toTab(item.path)"
+           @click.right.prevent="mouseRight(item.meta.activeIndex, $event)"
+           @mouseover="mouseover = item.meta.activeIndex"
+           @mouseleave="mouseover = -1">
+        <div :class="{mouseActive: (mouseover == item.meta.activeIndex)? mouseover == getActive? false: true: false}">
+          <span>{{ item.meta.title }}</span>
+          <transition name="tran">
+            <span v-if="(item.meta.close && mouseover == item.meta.activeIndex)? true: false"
+                  :class="{closeBtn: (item.meta.close && mouseover == item.meta.activeIndex)? true: false}"
+                  class="el-icon-close"
+                  @click.stop="closeTag(item.meta.title, item.meta.activeIndex)"></span>
+          </transition>
+        </div>
+      </div>
+<!--      <div class="btnShadow" :style="{left: left +'px'}"></div>-->
 
-    <div v-for="(item, index) in getAsideTitle"
-         :key="index"
-         ref="tag"
-         :active-index="item.meta.activeIndex"
-         :style="{borderRadius: '1rem', color: (getActive === item.meta.activeIndex)?getThemeColor:'#13677B'}"
-         :class="{titleBtn: true,
-                  animation: true,
-                  active: (getActive === item.meta.activeIndex)? true: false,
-                  mouseActive: (mouseover == item.meta.activeIndex)? mouseover == getActive? false: true: false}"
-         @click="toTab(item.path)"
-         @click.right.prevent="mouseRight(item.meta.activeIndex, $event)"
-         @mouseover="mouseover = item.meta.activeIndex"
-         @mouseout="mouseover = -1">
-        <span>{{ item.meta.title }}</span>
-      <transition name="tran">
-        <span v-if="(item.meta.close && mouseover == item.meta.activeIndex)? true: false" class="el-icon-close" @click.stop="closeTag(item.meta.title, item.meta.activeIndex)"></span>
-      </transition>
+      <component v-if="mouseR" is="RightFun" :clientX="clientX" :clientY="clientY" :closeIndex="closeIndex"
+                 @close-r="closeRightF">
+      </component>
     </div>
-    <div class="btnShadow" :style="{left: left +'px'}"></div>
-
-    <!--      <i v-if="isShow" rightIcon class="el-icon-d-arrow-right scroll" @click="toRight"></i>-->
-    <component v-if="mouseR" is="RightFun" :clientX="clientX" :clientY="clientY" :closeIndex="closeIndex"
-               @close-r="closeRightF">
-    </component>
+    <i v-if="moveFlag && moveShow" rightIcon class="el-icon-d-arrow-right scroll" @click="toRight"></i>
   </div>
 </template>
 
@@ -40,12 +47,15 @@ export default {
     return {
       navWidth: '', //标题导航条宽度
       pageWidth: '', //页面宽度
-      isShow: false,
+      moveFlag: false, // 是否显示标题横向移动按钮
+      moveShow: false,
+      moveDistance: 100, // 每次移动距离
       mouseR: false, //是否渲染鼠标右键事件
       closeIndex: 0, //关闭标题下标
       mouseover: -1, //鼠标悬浮状态
       clientX: '',
       clientY: '',
+      titleLeft: 200,
       left: 10 //按钮阴影的滚动距离
     }
   },
@@ -60,15 +70,21 @@ export default {
       },
       deep: true
     },
+    getCollapseState: {
+      handler: function() {
+        this.titleLeft = (this.getCollapseState == true)?'65':'200'
+      },
+      deep: true
+    }
     /*
      * 如果导航标题被删除或添加导致导航标题tabs变化 则也需要重新计算当前活跃阴影的位置
      * */
-    getAsideTitle: {
+    /*getAsideTitle: {
       handler: function() {
         this.computedDistance(this.getActive)
       },
       deep: true
-    }
+    }*/
   },
   computed: {
     ...mapGetters({
@@ -159,56 +175,43 @@ export default {
     * 左侧滚动
     * */
     toLeft() {
-      this.$nextTick(function () {
-        this.move("left")
-      })
+      this.move(this.moveDistance)
     },
     /*
     * 右侧滚动
     * */
     toRight() {
-      this.$nextTick(function () {
-        this.move("right")
+      this.move(-this.moveDistance)
+    },
+    /**
+     * 正数左移，负数右移，移动距离默认100，如果没有横向没有距离可以移动了，保持不变
+     * */
+    move(distance) {
+      const _this = this
+      this.$nextTick(() => {
+        const titleDom = _this.$refs.titleNav
+        let hiddenWidth = _this.titleLeft - titleDom.offsetLeft
+        let totalWidth = 0
+        if(hiddenWidth < distance) {
+          distance = hiddenWidth
+        }
+        if(distance < 0) {
+          if(titleDom.offsetLeft == 0) {
+            hiddenWidth = 0
+          }
+          for (const item of titleDom.children) {
+            const temp = item.clientWidth + Number(item.style["marginLeft"].replace(/[^0-9]/ig, '')) + Number(item.style["marginRight"].replace(/[^0-9]/ig, ''))
+            totalWidth = totalWidth + temp
+          }
+          const screenWidth = window.screen.availWidth - _this.titleLeft
+          if((totalWidth - hiddenWidth) < screenWidth) {
+            distance = 0
+          }
+        }
+        titleDom.style.left = (titleDom.offsetLeft + distance) + 'px'
       })
     },
-    /*
-    * 是否显示左右滚动按钮 当标题导航宽度大于（当前页面宽度 - 左侧导航栏宽度）时显示左右滚动按钮，否则隐藏
-    * */
-    showBtn() {
-      /* this.$nextTick(function () {
-         //页面长度----页面宽度-左侧导航栏
-         if (this.getCollapseState == false) {
-           this.pageWidth = document.documentElement.clientWidth - 200
-         } else {
-           this.pageWidth = document.documentElement.clientWidth - 64
-         }
-         //标题导航宽度
-         this.navWidth = this.$el.querySelector('.titleNav').scrollWidth
-
-         //如果标题导航超出页面宽度 则显示方向键 否则隐藏
-         if (this.navWidth >= this.pageWidth) {
-           this.isShow = true
-           // this.$el.querySelector('.titleNav').scss.right = '20px'
-         } else {
-           this.isShow = false
-         }
-       })*/
-    },
-    /*
-    * 移动函数,移动距离为当前可滚动距离的三分之一
-    * */
-    move(direction) {
-      // if (direction === 'left') {
-      //   let num = 0
-      //   num += (this.navWidth - this.pageWidth + 40) / 3
-      //   this.$el.querySelector('.titleNav').scrollLeft -= num
-      // } else {
-      //   let num = 0
-      //   num += (this.navWidth - this.pageWidth + 40) / 3
-      //   this.$el.querySelector('.titleNav').scrollLeft += num
-      // }
-    },
-    /*
+    /**
     * 鼠标右键事件，阻止浏览器默认的右键事件，弹出关闭标题标签的选项(RightFun)
     * */
     mouseRight(currIndex, event) {
@@ -224,7 +227,7 @@ export default {
         this.clientY = event.clientY
       }
     },
-    /*
+    /**
     禁用浏览器默认事件，取消鼠标右键关闭功能弹窗（RightFun）
      */
     cancelMouseRight() {
@@ -238,26 +241,55 @@ export default {
     },
     //计算下一个激活标题tab的距离
     computedDistance(activeIndex) {
-      /*
-      width: 100
-      margin: 0 5
-      default: 10
-       */
-      let index = 0;
-      //拿去存储在vuex中的activeIndex对应的数组下标 确保删除tab时 解决重新生成tab的下标是不断自增长的问题
-      for(let item of this.getAsideTitle) {
-        if(item.meta.activeIndex == activeIndex) {
-          break
+      this.$nextTick(() => {
+        let totalWidth = 0
+        let addWidth = 0
+        const titleDom = this.$refs.titleNav
+        const screenWidth = window.screen.availWidth - this.titleLeft
+        // 如果不是最后一个，那就是重定位
+        const lastNode = titleDom.children[titleDom.childElementCount - 1]
+        for (const item of titleDom.childNodes) {
+          const temp = item.clientWidth + Number(item.style["marginLeft"].replace(/[^0-9]/ig, '')) + Number(item.style["marginRight"].replace(/[^0-9]/ig, ''))
+          totalWidth = totalWidth + temp
+          if(item.attributes["active-index"].nodeValue == activeIndex) {
+            addWidth = temp
+            break
+          }
         }
-        index++
-      }
-      if (index == 0) {
-        this.left = 10;
-      }
-
-      if (index >= 1) {
-        this.left = (index * 110) + 10;
-      }
+        if(totalWidth > screenWidth) {
+          this.moveFlag = true
+        }
+        // 被隐藏的长度
+        const hiddenWidth = this.titleLeft - titleDom.offsetLeft
+        if(lastNode.attributes["active-index"].nodeValue != activeIndex) {
+          /**
+           * 1.左移
+           * 2.不移动
+           * 3.右移
+           * */
+          if((totalWidth - hiddenWidth) < screenWidth && hiddenWidth <= (totalWidth - addWidth)) {
+            return
+          }
+          if(hiddenWidth > 0 && (totalWidth - hiddenWidth) < screenWidth) {
+            // 左移
+            titleDom.style.left = (titleDom.offsetLeft + (hiddenWidth - (totalWidth - addWidth))) + 'px'
+            return
+          }
+          if((totalWidth - hiddenWidth) > screenWidth) {
+            // 右移
+            const avalidWidth = addWidth - (totalWidth - screenWidth)
+            // 如果可用宽度小于标题宽度，需要滚动
+            titleDom.style.left = (titleDom.offsetLeft - Math.abs(avalidWidth)) + 'px'
+            return
+          }
+        } else {
+          // 新增右移，如果可用宽度小于标题宽度，需要滚动
+          // 移动距离，当前标题总长度 - 被隐藏的长度 - 标题长度 + 自身长度
+          if((screenWidth - totalWidth) <= 0 && (totalWidth - hiddenWidth) > screenWidth) {
+            titleDom.style.left = (titleDom.offsetLeft - (totalWidth - hiddenWidth - screenWidth + addWidth)) + 'px'
+          }
+        }
+      })
     }
   },
   mounted() {
@@ -276,7 +308,6 @@ export default {
     * 监听窗口的变化，如果条件符合，显示左右方向滚动按钮
     * */
     window.addEventListener('resize', function () {
-      _this.showBtn()
     })
     /*
     * 监听整个页面的点击事件，如果mouseR(标题导航打开右键功能时)关闭这个功能
@@ -286,10 +317,22 @@ export default {
     })
   },
   updated() {
-    this.showBtn()
+    const _this = this
+    this.$nextTick(() => {
+      const titleDom = _this.$refs.titleNav
+      const screenWidth = window.screen.availWidth - _this.titleLeft
+      // 如果不是最后一个，那就是重定位
+      let totalWidth = 0
+      for (const item of titleDom.children) {
+        const temp = item.clientWidth + Number(item.style["marginLeft"].replace(/[^0-9]/ig, '')) + Number(item.style["marginRight"].replace(/[^0-9]/ig, ''))
+        totalWidth = totalWidth + temp
+      }
+      if(totalWidth > screenWidth) {
+        this.moveFlag = true
+      }
+    })
   },
   created() {
-    this.showBtn()
     //读取刷新前存储在session域中的数据，然后存入vuex中
     let loadBeforeRes = JSON.parse(sessionStorage.getItem("titleItem"))
     if (loadBeforeRes != null) {
@@ -313,18 +356,27 @@ export default {
 
 <style scoped>
 
+.titleContainer {
+  position: fixed;
+  width: 100%;
+  height: 44px;
+  max-height: 44px;
+  background-color: #F8F4EA;
+  z-index: 10;
+}
+
 .titleNav {
   position: fixed;
   top: 60px;
-  width: calc(100%);
+  /*width: calc(100%);*/
   height: 40px;
   max-height: 42px;
   line-height: 40px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 2px 10px;
-  background-color: #e4ebf5;
+  padding: 2px 20px;
+  white-space: nowrap;
   user-select: none;
   z-index: 10;
 }
@@ -333,46 +385,67 @@ export default {
   display: none;
 }
 
-.titleNav .titleBtn {
-  display: flex;
+.titleBtn {
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 38px;
-  line-height: 38px;
+  height: 34px;
+  padding: 0 16px;
+  line-height: 34px;
   max-height: 42px;
   text-align: center;
   cursor: pointer;
-  margin: 0 5px;
-  border-radius: 1rem;
+  border-radius: 6px;
   box-shadow: 0px 0px 2px #c8d0e7;
 }
 
-.titleNav .titleBtn span:first-child {
+.titleNav .titleBtn div:first-child {
+  position: relative;
+}
+
+.titleNav .titleBtn div:first-child span:first-child {
   margin: 2px;
 }
 
-.btnShadow {
-  position: absolute;
-  width: 100px;
-  height: 35px;
-  max-height: 42px;
-  margin: 0 5px;
-  pointer-events: none;
-  border-radius: 1rem;
-  box-shadow: inset 3px 2px 1px #cccccc,
-  inset -3px -2px 1px #f2f2f2;
-  transition: all .3s ease;
+.closeBtn {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  line-height: 12px;
+  padding: 2px;
+  border-radius: 12px;
+  font-size: 8px;
+  background-color: #3C79F5;
+  color: #FFFFFF;
 }
 
-.active:before {
+/*.btnShadow {*/
+/*  position: absolute;*/
+/*  width: 100px;*/
+/*  height: 35px;*/
+/*  max-height: 42px;*/
+/*  margin: 0 5px;*/
+/*  pointer-events: none;*/
+/*  border-radius: 1rem;*/
+/*  box-shadow: inset 3px 2px 1px #cccccc,*/
+/*  inset -3px -2px 1px #f2f2f2;*/
+/*  transition: all .3s ease;*/
+/*}*/
+
+.active {
+  background-color: #CEAB93;
+  color: #FFFFFF;
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+/*.active:before {
   content: ' ';
   width: 8px;
   height: 8px;
   background-color: #B04077;
   border-radius: 5px;
   z-index: 10;
-}
+}*/
 
 .mouseActive {
   color: #5F4B8B;
@@ -385,24 +458,32 @@ export default {
 }
 
 [leftIcon], [rightIcon] {
-  position: absolute;
+  position: fixed;
   cursor: pointer;
-  height: 35px;
-  line-height: 42px;
-  margin-top: -5px;
+  height: 44px;
+  line-height: 44px;
   z-index: 500;
+  transition: all .5s ease;
 }
 
 [leftIcon] {
-  left: 0;
-  top: 6px;
-  box-shadow: 2px 0 5px 0 #bfbfbf;
+  left: 200px;
+  top: 60px;
+  box-shadow: 2px 0 2px 0 #bfbfbf;
+  background-color: #F8F4EA;
+  transition: all .5s ease;
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 [rightIcon] {
   right: 0;
-  top: 6px;
-  box-shadow: 0 2px 5px 0 #bfbfbf;
+  top: 60px;
+  opacity: 1;
+  box-shadow: -2px 0 2px 0 #bfbfbf;
+  background-color: #F8F4EA;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 
 .tran-enter-active, .tran-leave-active {

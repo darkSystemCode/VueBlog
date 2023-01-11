@@ -99,7 +99,6 @@
               <div style="height: 271px">
                 <el-card shadow="hover">
                   前端页面：
-                  <a href="javascript:;" @click="jump('http://47.115.55.12:81')">http://47.115.55.12:81</a>
                 </el-card>
               </div>
             </el-card>
@@ -253,6 +252,14 @@ export default {
     }
   },
   methods: {
+    toUrl() {
+      this.$router.push({
+        path: '/Mail',
+        query: {
+          username: 'test'
+        }
+      })
+    },
     /*
     * countup.js的options封装
     * @params：

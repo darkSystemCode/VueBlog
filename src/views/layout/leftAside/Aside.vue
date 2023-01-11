@@ -43,6 +43,9 @@ export default {
       defaultOpen: ['0']
     }
   },
+  components: {
+    SideNav
+  },
   computed: {
     activeNav() {
       //当前激活的导航
@@ -57,24 +60,13 @@ export default {
       getActiveColor: 'globalSetting/ActiveColor',
       getDoubleOpen: 'globalSetting/DoubleOpen',
       getCollapseState: 'header/CollapseState',
-      getThemeColor: 'globalSetting/getTheme_color'
+      getThemeColor: 'globalSetting/getTheme_color',
+      getAsideTitle: 'header/AsideTitle',
+      getNavs: 'header/Navs'
     })
   },
   created() {
-    //获得导航的json数据
-    Axios({
-      url: location.protocol + "/nav.json",
-      method: "get"
-    }).then(res => {
-      //把导航数据存入vuex中
-      this.$store.dispatch('header/setNavs', {
-        nav: res.data.nav
-      })
-      this.nav = res.data
-    })
-  },
-  components: {
-    SideNav
+    this.nav = this.getNavs
   }
 }
 </script>

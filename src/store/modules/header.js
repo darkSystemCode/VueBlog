@@ -1,19 +1,16 @@
 const state = {
   nav: [], //左侧导航栏数据
   isCollapse: false,  //是否收缩左侧导航栏 false为展开 true为收缩
-  asideTitle: [
-    {
-      path: '/Welcome',
+  asideTitle: [], //存储点击左侧导航栏后的导航名，作为标题显示头
+/*{
+  path: '/Welcome',
       meta: {
-        title: '主控制台',
-        activeIndex: 0,
-        close: false
-      }
-    }
-  ], //存储点击左侧导航栏后的导航名，作为标题显示头
-  crumbs: [
-    '控制台','主控制台'
-  ], //存储面包屑
+  title: '主控制台',
+      activeIndex: 0,
+      close: false
+}
+}*/
+  crumbs: [], //存储面包屑 '控制台','主控制台'
   activeIndex: 0,  //当前活跃的标题下标
   count: 0  //下标增值变量
 }
@@ -63,16 +60,9 @@ const mutations = {
   }
 }
 
-const actions = {
-  setNavs(context, nav) {
-    context.commit('setNav', nav)
-  }
-}
-
 export default {
   namespaced: true,
   state,
   getters,
-  mutations,
-  actions
+  mutations
 }

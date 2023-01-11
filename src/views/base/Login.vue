@@ -94,9 +94,9 @@ export default {
       autoLogin: false, //是否勾选自动登录功能
       height: '',
       loginForm: {
-        username: '',
-        password: '',
-        verifyPass: ''
+        username: 'test',
+        password: 'test123',
+        verifyPass: 'test123'
       },
       rules: {
         username: [

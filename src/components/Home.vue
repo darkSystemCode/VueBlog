@@ -4,7 +4,7 @@
     <el-aside width="200px" class="aside"
               :class="{'aside-show': getCollapseState == false?true:false,
                       'aside-hide':getCollapseState == true?true:false}">
-      <Aside></Aside>
+      <Aside v-if="showAside"></Aside>
     </el-aside>
 
     <el-container>
@@ -20,7 +20,6 @@
         <keep-alive>
           <router-view :style="{padding: '0 20px', marginTop: '55px'}"></router-view>
         </keep-alive>
-
       </el-main>
       <!--尾部版权-->
       <el-footer>
@@ -38,9 +37,15 @@ import AsideTitle from "../views/layout/rightMain/AsideTitle";
 import Crumbs from "../views/layout/rightMain/Crumbs"
 import Footer from "../views/layout/rightMain/Footer";
 import {mapGetters} from 'vuex'
+import Axios from "axios";
 
 export default {
   name: "Home",
+  data() {
+    return {
+      showAside: false
+    }
+  },
   computed: {
     /*
     * 在VUEX中获得asideColor颜色值
@@ -57,7 +62,50 @@ export default {
       this.createTabs(to.path)
     }
   },
+  created() {
+    //获得导航的json数据
+    Axios({
+      url: location.protocol + "/nav.json",
+      method: "get"
+    }).then(res => {
+      let firstMenu = this.findFirst(res.data.nav)
+      //把导航数据存入vuex中
+      this.$store.commit('header/setNav', res.data)
+      const exists = this.getAsideTitle.filter(item => {
+        return item.path == firstMenu[1].path
+      })
+      if(exists.length <= 0) {
+        this.$router.push({ path: firstMenu[1].path })
+        this.$store.commit('header/setAside', firstMenu[1])
+        this.$store.commit('header/setCrumbs', firstMenu[0])
+      }
+      this.showAside = true
+    })
+  },
   methods: {
+    findFirst(data, child = false, parent = []) {
+      let tempArray = Array()
+      for(const item of data) {
+        let res = child? parent: Array()
+        if(!child && item.child != undefined) {
+          res.push(item.meta.title)
+        }
+        if(item.meta.first) {
+          res.push(item.meta.title)
+          tempArray.push(res)
+          item.meta.activeIndex = 0
+          tempArray.push(item)
+          return tempArray
+        } else {
+          if(item.child != undefined) {
+            const rs = this.findFirst(item.child, true, res)
+            if(rs != undefined) {
+              return rs
+            }
+          }
+        }
+      }
+    },
     /**
      * 动态添加标题标签函数
      * path：当前点击左侧导航的path
@@ -76,15 +124,10 @@ export default {
     }
      * */
     createTabs(path) {
-      if (path !== '/Welcome') {
-        //得到当前点击的左侧导航的名字，存入vuex的header/asideTitle中
-        let nav = this.getNavs.nav
-        for (let i = 0; i < nav.length; i++) {
-          this.recursionFun(path, nav[i])
-        }
-      } else {
-        this.$store.commit('header/setActiveIndex', 0)
-        this.setCrumbs('控制台', '主控制台')
+      //得到当前点击的左侧导航的名字，存入vuex的header/asideTitle中
+      let nav = this.getNavs.nav
+      for (let i = 0; i < nav.length; i++) {
+        this.recursionFun(path, nav[i])
       }
     },
     //抽离模块 用于递归
@@ -117,9 +160,9 @@ export default {
      *  把当前导航存入vuex中，作为导航标题tabs的显示（即主页面的header标题显示）和面包屑的显示
      * */
     tabsVuex(path, parentTitle, data) {
-      if (!this.getRoles(path, data)) {
+      /*if (!this.getRoles(path, data)) {
         return
-      }
+      }*/
       const currTitle = data.meta.title
       //判断vuex中是否已经存在当前标题，如果存在则定位到当前导航，否则添加入vuex中
       let result = this.getAsideTitle.filter(item => {
@@ -136,7 +179,8 @@ export default {
         //设置面包屑
         this.setCrumbs((parentTitle != null && parentTitle != '') ? parentTitle : currTitle,
             (parentTitle != null && parentTitle != '') ? currTitle : '')
-      } else {//定位到当前导航标题tabs
+      } else {
+        // 定位到当前导航标题tabs
         if (data.path === path) {
           let result = this.getAsideTitle.filter(item => {
             return item.meta.title === data.meta.title
