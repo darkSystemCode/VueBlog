@@ -1,5 +1,5 @@
 <template>
-  <footer ref="footer" class="footer">Copyright @2020 <a href="javascript:;">hjx blog</a>版权所有</footer>
+  <footer ref="footer" class="footer">Copyright @2020 <a href="javascript:;">hjx </a>版权所有</footer>
 </template>
 
 <script>

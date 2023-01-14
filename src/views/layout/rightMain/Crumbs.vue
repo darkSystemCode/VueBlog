@@ -1,5 +1,5 @@
 <template>
-  <el-breadcrumb separator-class="el-icon-d-arrow-right" class="crumbs" crumbs>
+  <el-breadcrumb class="crumbs" crumbs>
     <transition-group name="crumbsTran" tag="span">
       <template v-for="item in getCrumbs">
         <el-breadcrumb-item v-if="item != ''" class="list" :key="String(item)">{{item}}</el-breadcrumb-item>

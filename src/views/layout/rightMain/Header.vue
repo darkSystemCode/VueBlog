@@ -67,6 +67,7 @@
 import GlbSetting from "../../../components/GlbSetting"
 import Crumbs from "./Crumbs"
 import {mapGetters} from "vuex"
+import { setSessionStorage } from "@/utils/public";
 
 export default {
   name: "Header",
@@ -80,7 +81,10 @@ export default {
       getDrawerState: 'globalSetting/openDrawer',
       getCollapseState: 'header/CollapseState',
       getLeftMenu: 'globalSetting/getLeftMenu',
-      getCrumbsState: 'globalSetting/CrumbsState'
+      getCrumbsState: 'globalSetting/CrumbsState',
+      getAsideTitle: 'header/AsideTitle',
+      getActive: 'header/active',
+      getCrumbs: 'header/Crumbs'
     })
   },
   methods: {
@@ -110,24 +114,15 @@ export default {
     //个人信息按钮
     handleCommand(command) {
       if (command === "profile") {
-        this.$router.push({
-          path: '/profile'
-        })
+        this.$router.push({ path: '/Profile' })
       } else if (command === "updatePass") {
-        this.$router.push({
-          path: '/updatePass'
-        })
+        this.$router.push({ path: '/ChangePW' })
       } else if (command == "logout") {
-        this.$requestGET({
-          url: '/logout'
-        }).then(res => {
-          if (res.code === 200) {
-            this.$router.push({
-              path: '/Login',
-              query: {
-                autoLogin: false
-              }
-            })
+        setSessionStorage(this.getAsideTitle, this.getActive, this.getCrumbs)
+        this.$router.push({
+          path: '/Login',
+          query: {
+            autoLogin: false
           }
         })
       }

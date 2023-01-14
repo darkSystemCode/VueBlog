@@ -76,15 +76,6 @@ export default {
       },
       deep: true
     }
-    /*
-     * 如果导航标题被删除或添加导致导航标题tabs变化 则也需要重新计算当前活跃阴影的位置
-     * */
-    /*getAsideTitle: {
-      handler: function() {
-        this.computedDistance(this.getActive)
-      },
-      deep: true
-    }*/
   },
   computed: {
     ...mapGetters({
@@ -94,6 +85,13 @@ export default {
       getCrumbs: 'header/Crumbs',
       getNavs: 'header/Navs',
       getThemeColor: 'globalSetting/getTheme_color'
+    })
+  },
+  mounted() {
+    window.addEventListener('click', e => {
+      if(this.mouseR == true) {
+        this.mouseR = false
+      }
     })
   },
   methods: {
@@ -216,10 +214,9 @@ export default {
     * */
     mouseRight(currIndex, event) {
       //渲染右键功能 如果仅剩首页则不渲染右键功能
-      const isIndex = this.getAsideTitle.filter(item => {
-        return item.meta.activeIndex != 0
-      })
-      if(isIndex.length !== 0) {
+      if(this.getAsideTitle.length == 1 && !this.getAsideTitle[0].meta.close) {
+        this.mouseR = false
+      } else {
         this.mouseR = true
         this.closeIndex = currIndex
         //获得当前鼠标点击右键的X, y轴坐标 传递给子组件做初始化位置
@@ -291,30 +288,6 @@ export default {
         }
       })
     }
-  },
-  mounted() {
-    /**
-     * 监听页面是否执行刷新，如果刷新则把当前的标题标签存入vuex中，供刷新后重新渲染
-     * */
-    let _this = this
-    window.addEventListener('beforeunload', e => {
-      sessionStorage.setItem("titleItem", JSON.stringify({
-        titleItem: _this.getAsideTitle,
-        activeIndex: _this.getActive,
-        crumbs: _this.getCrumbs
-      }))
-    })
-    /*
-    * 监听窗口的变化，如果条件符合，显示左右方向滚动按钮
-    * */
-    window.addEventListener('resize', function () {
-    })
-    /*
-    * 监听整个页面的点击事件，如果mouseR(标题导航打开右键功能时)关闭这个功能
-    * */
-    window.addEventListener('click', function () {
-      _this.mouseR = false
-    })
   },
   updated() {
     const _this = this

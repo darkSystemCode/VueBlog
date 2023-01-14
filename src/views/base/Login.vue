@@ -1,7 +1,9 @@
 <template>
-  <div class="loginBox" id="loginBox" :style="{height: getHeight+'px'}">
+  <div class="container" id="loginBox" :style="{height: getHeight+'px'}">
+    <div class="backGround">
+      <img src="../../assets/imgs/backgroud.png">
+    </div>
     <div class="login" login>
-      <el-card shadow="always">
         <el-avatar :src="require('../../assets/imgs/logo.png')" :size="80" avatar></el-avatar>
         <div class="form" form>
           <el-form :model="loginForm" :rules="rules" ref="login" label-width="70px" label-position="left">
@@ -48,7 +50,6 @@
             <a href="#">忘记密码？</a>
           </div>
         </div>
-      </el-card>
     </div>
   </div>
 </template>
@@ -233,23 +234,30 @@ export default {
 
 <style scoped>
 
-#loginBox {
-  position: relative;
+.container {
+  background-color: #5e8a8c;
+}
+
+.backGround {
+  position: fixed;
+  top: -35%;
+  left: -16%;
+}
+
+.backGround img {
   width: 100%;
-  background: url("../../assets/imgs/login.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
+  height: 100%;
+  transform: scale(0.5);
 }
 
 .login[login] {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto;
-  width: 400px;
-  height: 500px;
+  top: 25%;
+  right: 14%;
+  width: 360px;
+  border-radius: 16px;
+  background-color: #ecede7;
+  padding: 20px;
 }
 
 .login [avatar] {

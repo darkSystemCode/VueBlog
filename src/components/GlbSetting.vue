@@ -76,6 +76,20 @@
           </div>
         </div>
       </div>
+      <div class="box-item">
+        <div>
+          <span>显示LOGO图标</span>
+          <el-switch v-model="logoFlag" active-color="#409EFF" inactive-color="#909399" float="right" @change="handleLogoFlag"></el-switch>
+        </div>
+        <div class="tip">
+          <div>
+            <span class="el-icon-warning-outline"></span>
+          </div>
+          <div>
+            <p>是否显示LOGO图标</p>
+          </div>
+        </div>
+      </div>
     </div>
   </el-drawer>
 </template>
@@ -102,7 +116,8 @@
         doubleOpen: null, //是否只打开一个菜单
         crumbsState: null, //默认打开面导航包屑提示
         leftMenu: null, //左侧导航栏固定
-        theme_color: ''
+        theme_color: '',
+        logoFlag: null // 是否显示logo
       }
     },
     watch: {
@@ -120,6 +135,11 @@
         handler: function(val) {
           this.tip(val, '左侧导航栏固定', '左侧导航栏取消固定')
         }
+      },
+      getLogoFlag: {
+        handler: function (val) {
+          this.tip(val, '显示logo图标', '不显示logo图标')
+        }
       }
     },
     computed: {
@@ -133,6 +153,7 @@
         CrumbsState: 'globalSetting/CrumbsState',
         getLeftMenu: 'globalSetting/getLeftMenu',
         getThemeColor: 'globalSetting/getTheme_color',
+        getLogoFlag: 'globalSetting/getLogoFlag'
       })
     },
     mounted() {
@@ -145,6 +166,7 @@
       this.crumbsState = this.CrumbsState
       this.leftMenu = this.getLeftMenu
       this.theme_color = this.getThemeColor
+      this.logoFlag = this.getLogoFlag
     },
     methods: {
       tip(state, openMsg, closeMsg) {
@@ -195,6 +217,9 @@
       },
       handleLeftMenu() {
         this.$store.commit("globalSetting/setLeftMenu", this.leftMenu)
+      },
+      handleLogoFlag() {
+        this.$store.commit('globalSetting/setLogoFlag', this.logoFlag)
       }
     }
   }

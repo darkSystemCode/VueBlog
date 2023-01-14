@@ -4,7 +4,7 @@
     <div v-if="nav.LOGO && this.nav.LOGO.id === '1'"
          class="logo"
          :style="{width: (getCollapseState == false)?'200px':'64px', backgroundColor: this.getThemeColor}">
-      <div :style="{minWidth: getCollapseState? '64px': '60px'}" class="img">
+      <div v-if="this.getLogoFlag" :style="{minWidth: getCollapseState? '64px': '60px'}" class="img">
         <img :src="require('@/assets'+nav.LOGO.img)" alt="" style="width: 100%">
       </div>
       <span>{{ nav.LOGO.title }}</span>
@@ -62,7 +62,8 @@ export default {
       getCollapseState: 'header/CollapseState',
       getThemeColor: 'globalSetting/getTheme_color',
       getAsideTitle: 'header/AsideTitle',
-      getNavs: 'header/Navs'
+      getNavs: 'header/Navs',
+      getLogoFlag: 'globalSetting/getLogoFlag'
     })
   },
   created() {

@@ -9,7 +9,8 @@ const state = {
   theme_color: '#5F4B8B',
   doubleOpen: false,
   crumbsState: true,
-  leftMenu: false
+  leftMenu: false,
+  logoFlag: true
 }
 
 const getters = {
@@ -42,6 +43,9 @@ const getters = {
   },
   getTheme_color: state => {
     return state.theme_color
+  },
+  getLogoFlag: state => {
+    return state.logoFlag
   }
 }
 
@@ -81,6 +85,9 @@ const mutations = {
   setTheme_color(state, value) {
     state.theme_color = value
     window.localStorage.setItem("themeColor", value)
+  },
+  setLogoFlag(state, value) {
+    state.logoFlag = value
   }
 }
 

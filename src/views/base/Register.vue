@@ -1,62 +1,63 @@
 <template>
-  <div class="loginBox" id="loginBox" :style="{height: getHeight+'px'}">
+  <div class="container" id="loginBox" :style="{height: getHeight+'px'}">
+    <div class="backGround">
+      <img src="../../assets/imgs/backgroud.png">
+    </div>
     <div class="login" login>
-      <el-card shadow="always">
-        <el-avatar :src="require('../../assets/imgs/logo.png')" :size="80" avatar></el-avatar>
-        <div class="form" form>
-          <el-form :model="registerForm" :rules="rules" ref="register" label-width="70px" label-position="left">
-            <el-form-item label="用户名" prop="username">
-              <el-input v-model="registerForm.username" @focus="showUnTip = true" autofocus></el-input>
-              <div tip v-if="showUnTip == true && this.registerForm.username == '' ">
-                <p>
-                  1、用户名可以是中文、英文、数字或组合
-                </p>
-                <p>
-                  2、用户名的长度为2~8
-                </p>
-                <p>
-                  3、不能包含特殊字符
-                </p>
-              </div>
-            </el-form-item>
-            <el-form-item label="密 码" prop="password">
-              <el-input show-password v-model="registerForm.password" @focus="showPsTip=true"></el-input>
-              <div tip v-if="showPsTip == true && this.registerForm.password == '' ">
-                <p>
-                  1、密码可以是中文、英文、数字或组合
-                </p>
-                <p>
-                  2、密码的长度为6~16
-                </p>
-                <p>
-                  3、不能包含特殊字符
-                </p>
-              </div>
-            </el-form-item>
-            <el-form-item label="确认密码" prop="verifyPass">
-              <el-input show-password v-model="registerForm.verifyPass"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱账号" prop="email">
-              <el-input v-model="registerForm.email"></el-input>
-            </el-form-item>
-            <el-form-item prop="verifyCode">
-              <div class="code">
-                <el-input v-model="registerForm.verifyCode"></el-input>
-                <el-button type="info" @click="sendEmail" :disabled="(showEmailTip == true)?true:false">
-                  获得邮箱验证码
-                </el-button>
-              </div>
-              <p v-if="showEmailTip == true"
-                 :style="{padding: 0, margin: 0, height: '25px',lineHeight: '25px', fontSize: '13px'}">
-                已发送至验证邮箱，验证码两分钟有效，{{this.millDecrement}}秒后重新发送</p>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" :style="{width: '100%'}" @click="register('register')">注 册</el-button>
-            </el-form-item>
-          </el-form>
-          <p toLogin><a href="javascript:;" @click="toLogin">已注册，前去登录</a></p>
-        </div>
-      </el-card>
+      <el-avatar :src="require('../../assets/imgs/logo.png')" :size="80" avatar></el-avatar>
+      <div class="form" form>
+        <el-form :model="registerForm" :rules="rules" ref="register" label-width="70px" label-position="left">
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="registerForm.username" @focus="showUnTip = true" autofocus></el-input>
+            <div tip v-if="showUnTip == true && this.registerForm.username == '' ">
+              <p>
+                1、用户名可以是中文、英文、数字或组合
+              </p>
+              <p>
+                2、用户名的长度为2~8
+              </p>
+              <p>
+                3、不能包含特殊字符
+              </p>
+            </div>
+          </el-form-item>
+          <el-form-item label="密 码" prop="password">
+            <el-input show-password v-model="registerForm.password" @focus="showPsTip=true"></el-input>
+            <div tip v-if="showPsTip == true && this.registerForm.password == '' ">
+              <p>
+                1、密码可以是中文、英文、数字或组合
+              </p>
+              <p>
+                2、密码的长度为6~16
+              </p>
+              <p>
+                3、不能包含特殊字符
+              </p>
+            </div>
+          </el-form-item>
+          <el-form-item label="确认密码" prop="verifyPass">
+            <el-input show-password v-model="registerForm.verifyPass"></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱账号" prop="email">
+            <el-input v-model="registerForm.email"></el-input>
+          </el-form-item>
+          <el-form-item prop="verifyCode">
+            <div class="code">
+              <el-input v-model="registerForm.verifyCode"></el-input>
+              <el-button type="info" @click="sendEmail" :disabled="(showEmailTip == true)?true:false">
+                获得邮箱验证码
+              </el-button>
+            </div>
+            <p v-if="showEmailTip == true"
+               :style="{padding: 0, margin: 0, height: '25px',lineHeight: '25px', fontSize: '13px'}">
+              已发送至验证邮箱，验证码两分钟有效，{{ this.millDecrement }}秒后重新发送</p>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" :style="{width: '100%'}" @click="register('register')">注 册</el-button>
+          </el-form-item>
+        </el-form>
+        <p toLogin><a href="javascript:;" @click="toLogin">已注册，前去登录</a></p>
+      </div>
     </div>
   </div>
 </template>
@@ -247,23 +248,31 @@
 </script>
 
 <style scoped>
-  #loginBox {
-    position: relative;
+
+  .container {
+    background-color: #5e8a8c;
+  }
+
+  .backGround {
+    position: fixed;
+    top: -35%;
+    left: -16%;
+  }
+
+  .backGround img {
     width: 100%;
-    background: url("../../assets/imgs/login.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
+    height: 100%;
+    transform: scale(0.5);
   }
 
   .login[login] {
     position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    width: 400px;
-    height: 500px;
+    top: 25%;
+    right: 14%;
+    width: 360px;
+    border-radius: 16px;
+    background-color: #ecede7;
+    padding: 20px;
   }
 
   .login [avatar] {

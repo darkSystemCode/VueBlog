@@ -38,6 +38,7 @@ import Crumbs from "../views/layout/rightMain/Crumbs"
 import Footer from "../views/layout/rightMain/Footer";
 import {mapGetters} from 'vuex'
 import Axios from "axios";
+import { setSessionStorage } from "@/utils/public";
 
 export default {
   name: "Home",
@@ -54,13 +55,24 @@ export default {
       getCollapseState: 'header/CollapseState',
       getNavs: 'header/Navs',
       getAsideTitle: 'header/AsideTitle',
-      getCount: 'header/Count'
+      getCount: 'header/Count',
+      getActive: 'header/active',
+      getCrumbs: 'header/Crumbs'
     })
   },
   watch: {
     '$route': function (to) {
       this.createTabs(to.path)
     }
+  },
+  mounted() {
+    /**
+     * 监听页面是否执行刷新，如果刷新则把当前的标题标签存入vuex中，供刷新后重新渲染
+     * */
+    let _this = this
+    window.addEventListener('beforeunload', e => {
+      setSessionStorage( _this.getAsideTitle, _this.getActive, _this.getCrumbs)
+    })
   },
   created() {
     //获得导航的json数据
@@ -71,13 +83,18 @@ export default {
       let firstMenu = this.findFirst(res.data.nav)
       //把导航数据存入vuex中
       this.$store.commit('header/setNav', res.data)
-      const exists = this.getAsideTitle.filter(item => {
-        return item.path == firstMenu[1].path
-      })
-      if(exists.length <= 0) {
+
+      // 浏览器刷新使用缓存数据重新显示刷新前的激活tab
+      const titleItem = JSON.parse(sessionStorage.getItem('titleItem'))
+      if(titleItem != null && titleItem != undefined) {
+        const activeTitle = titleItem.titleItem.filter((item) => {
+          return item.meta.activeIndex == titleItem.activeIndex
+        })
+        if(activeTitle.length > 0) {
+          this.$router.push({ path: activeTitle[0].path })
+        }
+      } else {
         this.$router.push({ path: firstMenu[1].path })
-        this.$store.commit('header/setAside', firstMenu[1])
-        this.$store.commit('header/setCrumbs', firstMenu[0])
       }
       this.showAside = true
     })

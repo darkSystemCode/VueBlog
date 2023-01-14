@@ -4,7 +4,7 @@
       <li :class="{closeCurr: true, notClick: currBtn}" @click="closeCurr"><i class="el-icon-arrow-down"></i>关闭当前页面</li>
       <li :class="{closeLeft: true, notClick: leftBtn}" @click="closeLeft"><i class="el-icon-back"></i>关闭左侧页面</li>
       <li :class="{closeRight: true, notClick: rightBtn}" @click="closeRight"><i class="el-icon-right"></i>关闭右侧页面</li>
-      <li class="closeOther" @click="closeOther"><i class="el-icon-minus"></i>关闭其他页面</li>
+      <li :class="{closeOther: true, notClick: otherBtn}" @click="closeOther"><i class="el-icon-minus"></i>关闭其他页面</li>
       <li :class="{closeAll: true, notClick: allBtn}" @click="closeAll"><i class="el-icon-close"></i>关闭全部页面</li>
     </ul>
   </div>
@@ -35,6 +35,7 @@ export default {
       rightBtn: false,
       leftBtn: false,
       currBtn: false,
+      otherBtn: false,
       allBtn: false
     }
   },
@@ -58,36 +59,31 @@ export default {
       this.currBtn = false
       this.rightBtn = false
       this.leftBtn = false
-      //如果当前点击导航为首页
-      if (index === 0) {
+      const currItem = this.getAsideTitle.filter(item => {
+        return item.meta.activeIndex == index
+      })
+      if(currItem.length > 0 && !currItem[0].meta.close) {
         this.currBtn = true
-      }
-      //如果当前点击导航标题左、右侧无导航标题 则禁用关闭左、右侧功能，即除了首页就剩下一个导航标题时
-      if (index !== 0) {
-        const one = this.getAsideTitle.filter(item => {
-          return item.meta.activeIndex != 0
-        })
-        if (one.length === 1) {
-          this.rightBtn = true
-          this.leftBtn = true
-          return
-        }
       }
       //如果当前点击导航标题右侧无导航标题 则禁用关闭右侧功能
       const right = this.getAsideTitle.filter(item => {
-        return item.meta.activeIndex > index && item.meta.activeIndex != 0
+        return item.meta.activeIndex > index && item.meta.close
       })
       if (right.length === 0) {
         this.rightBtn = true
-        return
       }
       //如果当前点击导航标题左侧无导航标题 则禁用关闭左侧功能
       const left = this.getAsideTitle.filter(item => {
-        return item.meta.activeIndex < index && item.meta.activeIndex != 0
+        return item.meta.close && item.meta.activeIndex < index
       })
       if (left.length === 0) {
         this.leftBtn = true
-        return
+      }
+      const other = this.getAsideTitle.filter(item => {
+        return item.meta.close && item.meta.activeIndex != index
+      })
+      if(other.length == 0) {
+        this.otherBtn = true
       }
     },
     /*
@@ -107,7 +103,7 @@ export default {
        */
       if (this.getActiveIndex == this.closeIndex) {
         this.getAsideTitle.forEach((item, index) => {
-          if (item.meta.activeIndex === this.closeIndex) {
+          if (item.meta.close && item.meta.activeIndex === this.closeIndex) {
             let nextTab = this.getAsideTitle[index + 1] || this.getAsideTitle[index - 1]
             if (nextTab) {
               this.$store.commit('header/setActiveIndex', nextTab.meta.activeIndex)
@@ -120,7 +116,7 @@ export default {
       }
       //根据下标删除标题tab
       this.$store.commit('header/delOrAddAside', this.getAsideTitle.filter(item => {
-        return item.meta.activeIndex != this.closeIndex
+        return !item.meta.close || item.meta.activeIndex != this.closeIndex
       }))
       this.$emit('close-r', false)
     },
@@ -132,7 +128,7 @@ export default {
       * */
       if (this.getActiveIndex !== this.closeIndex) {
         const leftTabs = this.getAsideTitle.filter(item => {
-          return item.meta.activeIndex < this.closeIndex && item.meta.activeIndex !== 0
+          return item.meta.activeIndex < this.closeIndex && item.meta.close
         })
         for (let index of leftTabs) {
           if (index.meta.activeIndex === this.getActiveIndex) {
@@ -150,7 +146,7 @@ export default {
         }
       }
       this.$store.commit('header/delOrAddAside', this.getAsideTitle.filter(item => {
-        return item.meta.activeIndex == 0 || item.meta.activeIndex >= this.getActiveIndex
+        return !item.meta.close || item.meta.activeIndex >= this.getActiveIndex
       }))
       this.$emit('close-r', false)
     },
@@ -186,7 +182,7 @@ export default {
     },
     closeOther() {
       const result = this.getAsideTitle.filter(item => {
-        return item.meta.activeIndex == 0 || item.meta.activeIndex == this.getActiveIndex
+        return !item.meta.close || item.meta.activeIndex == this.getActiveIndex
       })
       this.$store.commit('header/delOrAddAside', result)
       this.$emit('close-r', false)

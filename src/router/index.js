@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Routes from '../utils/autoRouter'
-import store from '@/store/store'
 
 Vue.use(VueRouter)
 //固定动态加载路由
@@ -9,6 +8,7 @@ const login = () => import('../views/base/Login')
 const register = () => import('../views/base/Register')
 const notPath = () => import('../views/base/NotPath_404')
 const home = () => import('../components/Home')
+const changePwd = () => import('../views/base/ChangePW')
 /*
 * routes的配置：
 * 1.固定项路由直接配置在router/index.js的routes数组里面
