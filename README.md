@@ -7,8 +7,12 @@
 ![image](https://github.com/darkSystemCode/VueBlog/blob/master/public/img/3.png)
 ![image](https://github.com/darkSystemCode/VueBlog/blob/master/public/img/4.png)
 
+# 架构设计
 
-# blogbackstage文件夹是博客后台管理系统
+使用了Vue.js全家桶+ElementUI框架。
+支持vue-router动态路由配置，在/public/nav.json配置动态路由，项目启动时加载该文件读取动态路由信息
+
+
 集成了NProgress进度条，不再做无聊的等待  
 vue-jsonExcel表格数据的导出excel表，解决繁琐的数据整理  
 vue全家桶，一步到位，方便快捷  
