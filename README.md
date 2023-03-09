@@ -1,5 +1,13 @@
 # VueBlog
 
+# 运行截图
+
+![image](https://github.com/darkSystemCode/VueBlog/blob/master/public/img/1.png)
+![image](https://github.com/darkSystemCode/VueBlog/blob/master/public/img/2.png)
+![image](https://github.com/darkSystemCode/VueBlog/blob/master/public/img/3.png)
+![image](https://github.com/darkSystemCode/VueBlog/blob/master/public/img/4.png)
+
+
 # blogbackstage文件夹是博客后台管理系统
 集成了NProgress进度条，不再做无聊的等待  
 vue-jsonExcel表格数据的导出excel表，解决繁琐的数据整理  
