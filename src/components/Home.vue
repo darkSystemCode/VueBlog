@@ -20,6 +20,9 @@
         <keep-alive>
           <router-view :style="{padding: '0 20px', marginTop: '55px'}"></router-view>
         </keep-alive>
+        <div v-if="showTopBtn" class="topBtn" @click="topFun">
+          <i class="el-icon-caret-top"></i>
+        </div>
       </el-main>
       <!--尾部版权-->
       <el-footer>
@@ -44,7 +47,8 @@ export default {
   name: "Home",
   data() {
     return {
-      showAside: false
+      showAside: false,
+      showTopBtn: false,
     }
   },
   computed: {
@@ -66,12 +70,23 @@ export default {
     }
   },
   mounted() {
-    /**
-     * 监听页面是否执行刷新，如果刷新则把当前的标题标签存入vuex中，供刷新后重新渲染
-     * */
     let _this = this
-    window.addEventListener('beforeunload', e => {
-      setSessionStorage( _this.getAsideTitle, _this.getActive, _this.getCrumbs)
+    this.$nextTick(() => {
+      /**
+       * 监听页面是否执行刷新，如果刷新则把当前的标题标签存入vuex中，供刷新后重新渲染
+       * */
+      window.addEventListener('beforeunload', e => {
+        setSessionStorage( _this.getAsideTitle, _this.getActive, _this.getCrumbs)
+      })
+      // 监听页面的滚动，动态添加置顶功能
+      window.addEventListener('scroll', function(){
+        if(document.documentElement.scrollTop >= 200 && !_this.showTopBtn) {
+          _this.showTopBtn = true
+        }
+        if(document.documentElement.scrollTop < 200) {
+          _this.showTopBtn = false
+        }
+      })
     })
   },
   created() {
@@ -229,6 +244,9 @@ export default {
         }
       }
       return true
+    },
+    topFun() {
+      document.documentElement.scrollTop = 0
     }
   },
   components: {
@@ -288,6 +306,25 @@ export default {
 
 .aside::-webkit-scrollbar { /*隐藏滚动条*/
   display: none;
+}
+
+.topBtn {
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 100px;
+  font-size: 20px;
+  text-align: center;
+  margin: 0 auto;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 8px 1px #d9d9d9;
+}
+
+.topBtn:hover {
+  transform: scale(1.05);
 }
 
 </style>

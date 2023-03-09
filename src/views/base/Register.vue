@@ -251,24 +251,26 @@
 
   .container {
     background-color: #5e8a8c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .backGround {
-    position: fixed;
-    top: -35%;
-    left: -16%;
+    width: 50%;
   }
 
   .backGround img {
     width: 100%;
     height: 100%;
-    transform: scale(0.5);
+  }
+
+  .login {
+    width: 50%;
+    position: relative;
   }
 
   .login[login] {
-    position: fixed;
-    top: 25%;
-    right: 14%;
     width: 360px;
     border-radius: 16px;
     background-color: #ecede7;

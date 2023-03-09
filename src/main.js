@@ -12,8 +12,7 @@ Vue.prototype.$requestGET = request_get
 Vue.prototype.$requestPOST = request_post
 
 Vue.config.productionTip = false
-Vue.use(ElementUI)
-Vue.use(NProgress)
+Vue.use(ElementUI, NProgress)
 
 //全局进度条配置
 NProgress.configure({
